@@ -1,11 +1,8 @@
 var Resource = (function () {
-    function Resource(api, modelWithctor) {
+    function Resource(api) {
         this.api = api;
-        this.instantiatibleModel = modelWithctor;
+        this.model = new this.Model();
     }
-    Resource.prototype.getBaseUrl = function () {
-        return null;
-    };
     Resource.prototype.toInstance = function (obj, json) {
         for (var propName in json) {
             obj[propName] = json[propName];
@@ -20,30 +17,55 @@ var Resource = (function () {
         return jsonObj;
     };
     Resource.prototype.save = function () {
-        return this.api.save(this.getBaseUrl(), this.toJSON(this.model));
+        return this.api.save(this.Url, this.toJSON(this.model));
     };
-    Resource.prototype.get = function () {
+    Resource.prototype.get = function (id) {
         var _this = this;
-        var url = this.getBaseUrl();
-        return this.api.get(url).then(function (data) {
-            return _this.toInstance(new _this.instantiatibleModel(), data);
+        var id = id || this.model.id;
+        if (typeof id !== "undefined") {
+            return this.api.get(this.Url, id).then(function (data) {
+                if (_this.model.id) {
+                    return _this.toInstance(_this.model, data);
+                }
+                else {
+                    return _this.model = _this.toInstance(new _this.Model(), data);
+                }
+            });
+        }
+        else {
+            throw Error("No id reference found");
+        }
+    };
+    Resource.prototype.getList = function () {
+        var _this = this;
+        this.models = new Array();
+        return this.api.get(this.Url).then(function (data) {
+            data.forEach(function (item) {
+                _this.models.push(_this.toInstance(new _this.Model(), item));
+            });
+            return _this.models;
         });
     };
     Resource.prototype.delete = function () {
         var _this = this;
-        return this.api.delete(this.getBaseUrl())
+        return this.api.delete(this.Url)
             .then(function () { return _this.model; });
     };
     return Resource;
 })();
 exports.Resource = Resource;
-function BaseUrl(url) {
+function ModelMap(model) {
     return function (Target) {
-        Target.prototype.getBaseUrl = function () {
-            return this.api.baseURL + url;
-        };
+        Target.prototype.Model = model;
         return Target;
     };
 }
-exports.BaseUrl = BaseUrl;
+exports.ModelMap = ModelMap;
+function Url(url) {
+    return function (Target) {
+        Target.prototype.Url = url;
+        return Target;
+    };
+}
+exports.Url = Url;
 //# sourceMappingURL=Resource.js.map

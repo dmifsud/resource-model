@@ -5,21 +5,22 @@ import {Promise} from "es6-promise";
 
 
 export abstract class Resource<T extends IModel>{
-  api : IAPI;
-  model: T;
-  instantiatibleModel : new() => T;
+  model: IModel;
   models: Array<IModel>;
 
+  //Annotation references
+  public Model : new() => T;
+  private Url : string;
 
-  abstract getUrl() : string;
-
-  //Annotation Methods
-  protected getBaseUrl(): string {
-        return null;
+  constructor(public api : IAPI){
+    this.model = new this.Model();
   }
 
+
+
+
   //helper methods
-  private toInstance(obj: any, json: any) : any {
+  private toInstance(obj: IModel, json: any) : any {
 
     //return new T();
 
@@ -37,48 +38,61 @@ export abstract class Resource<T extends IModel>{
     return jsonObj;
   }
 
-  constructor(api : IAPI,  modelWithctor : { new(): T }){
-    this.api = api;
-    this.instantiatibleModel = modelWithctor;
-  //  this.model = modelType;
-   // this.modelTest = new ({new(): modelType; })();
-  }
+
 
   save() : Promise<T>{
-    return this.api.save(this.getBaseUrl(), this.toJSON(this.model));
+    return this.api.save(this.Url, this.toJSON(this.model));
   }
 
-  get(): Promise<T>{
-    var url : string = this.getBaseUrl();
+  get(id?: number): Promise<T>{
 
-      //var inst = new this.instantiatibleModel();
+    var id : number = id || this.model.id;
+
+    if (typeof id !== "undefined"){ //TODO: check if model.id is feasible
 
 
+      return this.api.get(this.Url, id).then((data) => {
+          if (this.model.id){
+            return this.toInstance(this.model, data);
+          }else{
+            return this.model = this.toInstance(new this.Model(), data);
+          }
+      });
 
-    // if (this.model.id){ //or ference model map
-    //   url += "/" + this.model.id;
-    //   isList = false;
-    // }
+    }else{
+      throw Error("No id reference found");
+    }
 
-    return this.api.get(url).then((data) => {
+  }
 
-        return this.toInstance(new this.instantiatibleModel(), data);
+  getList(): Promise<Array<IModel>>{
+    this.models = new Array<IModel>();
 
+    return this.api.get(this.Url).then(data => {
+      data.forEach(item => {
+        this.models.push(this.toInstance(new this.Model(), item));
+      });
+      return this.models;
     });
   }
 
   delete(): Promise<T>{
-    return this.api.delete(this.getBaseUrl())
+    return this.api.delete(this.Url)
       .then(() => this.model);
   }
 
 }
 
-export function BaseUrl(url: string) {
+export function ModelMap<T>(model:  { new(): T }) {
     return function <TFunction extends Function>(Target: TFunction): TFunction {
-        Target.prototype.getBaseUrl = function() {
-            return this.api.baseURL + url;
-        };
+        Target.prototype.Model = model;
+        return Target;
+    };
+}
+
+export function Url(url: string) {
+    return function <TFunction extends Function>(Target: TFunction): TFunction {
+        Target.prototype.Url = url;
         return Target;
     };
 }
