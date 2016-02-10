@@ -1,14 +1,12 @@
 import {Promise} from "es6-promise";
 
-export interface IAPI{
+export interface IData<T>{
 
-  baseUrl : string;
+  save(reference: any, dataLogic : Function) : T;
 
-  save(url : string, model : any) : Promise<any>;
+  get(reference: any, dataLogic : Function) : T;
 
-  get(url : string, id?: any) : Promise<any>;
-
-  delete(url : string): Promise<any>;
+  delete(reference: any, dataLogic? : Function): T;
 }
 
 export function BaseUrl(url: string) {

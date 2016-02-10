@@ -1,5 +1,5 @@
-import {DefaultApi} from "../lib/classes/API";
-import {Resource,ModelMap,Url} from "../lib/classes/Resource";
+import {DefaultApi,LocalStorage} from "./api-example.ts";
+import {Resource,ModelMap,Reference} from "../lib/classes/Resource";
 import {IModel} from "../lib/interfaces/IModel";
 
 
@@ -14,19 +14,16 @@ class UserModel implements IModel{
   // addresses: Array<AddressModel>;
 }
 
-@Url("/users")
 @ModelMap(UserModel)
-export class UserResource extends Resource<UserModel>{
-model: UserModel; //NOTE: probably redundant
-models: Array<UserModel>;
-}
+@Reference("/users")
+class UserResource extends Resource<UserModel, Promise<UserModel>>{}
 
 //only one data layer class instance should exist in an app
 var api : DefaultApi = new DefaultApi();
+var storage : LocalStorage = new LocalStorage();
 
 //Ideally generated from service layer
 var User = new UserResource(api);
-
 
 //add custom UserModel
 var dave : UserModel = new User.Model();
@@ -44,6 +41,20 @@ User.get(42).then(data => {
 });
 
 //Getting list of users
-User.getList().then(list => {
-  console.log(list);
-});
+// User.getList().then(list => {
+//   console.log(list);
+// });
+
+//Using local storage
+@ModelMap(UserModel)
+class LocalUserResource extends Resource<UserModel, any>{}
+//TODO: find a way to eliminate the second generic argument.
+//It should automatically "know" what data type is returned from IData class
+
+var LocalUser : LocalUserResource = new LocalUserResource(storage);
+
+var localUserModel : UserModel = new UserModel();
+localUserModel.id = 32;
+localUserModel.name = "God";
+localUserModel.surname = "Almighty";
+LocalUser.save(localUserModel);

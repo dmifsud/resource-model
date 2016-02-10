@@ -1,6 +1,6 @@
 var Resource = (function () {
-    function Resource(api) {
-        this.api = api;
+    function Resource(data) {
+        this.data = data;
         this.model = new this.Model();
     }
     Resource.prototype.toInstance = function (obj, json) {
@@ -16,14 +16,16 @@ var Resource = (function () {
         }
         return jsonObj;
     };
-    Resource.prototype.save = function () {
-        return this.api.save(this.Url, this.toJSON(this.model));
+    Resource.prototype.save = function (model) {
+        var _this = this;
+        this.model = model || this.model;
+        return this.data.save(this.Reference + this.model.id, function () { return _this.toJSON(_this.model); });
     };
     Resource.prototype.get = function (id) {
         var _this = this;
         var id = id || this.model.id;
         if (typeof id !== "undefined") {
-            return this.api.get(this.Url, id).then(function (data) {
+            return this.data.get(this.Reference + "/" + id, function (data) {
                 if (_this.model.id) {
                     return _this.toInstance(_this.model, data);
                 }
@@ -36,20 +38,8 @@ var Resource = (function () {
             throw Error("No id reference found");
         }
     };
-    Resource.prototype.getList = function () {
-        var _this = this;
-        this.models = new Array();
-        return this.api.get(this.Url).then(function (data) {
-            data.forEach(function (item) {
-                _this.models.push(_this.toInstance(new _this.Model(), item));
-            });
-            return _this.models;
-        });
-    };
     Resource.prototype.delete = function () {
-        var _this = this;
-        return this.api.delete(this.Url)
-            .then(function () { return _this.model; });
+        return this.data.delete(this.Reference);
     };
     return Resource;
 })();
@@ -61,11 +51,11 @@ function ModelMap(model) {
     };
 }
 exports.ModelMap = ModelMap;
-function Url(url) {
+function Reference(ref) {
     return function (Target) {
-        Target.prototype.Url = url;
+        Target.prototype.Reference = ref;
         return Target;
     };
 }
-exports.Url = Url;
+exports.Reference = Reference;
 //# sourceMappingURL=Resource.js.map

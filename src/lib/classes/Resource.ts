@@ -1,18 +1,18 @@
-import {IAPI} from "../interfaces/IAPI";
+import {IData} from "../interfaces/IData";
 import {IModel} from "../interfaces/IModel";
 import {Promise} from "es6-promise";
 
 
 
-export abstract class Resource<T extends IModel>{
-  model: IModel;
-  models: Array<IModel>;
+export abstract class Resource<M extends IModel, R>{
+  model: M;
+  models: Array<M>;
 
   //Annotation references
-  public Model : new() => T;
-  private Url : string;
+  public Model : new() => M;
+  private Reference : any;
 
-  constructor(public api : IAPI){
+  constructor(public data : IData<any>){
     this.model = new this.Model();
   }
 
@@ -38,20 +38,19 @@ export abstract class Resource<T extends IModel>{
     return jsonObj;
   }
 
-
-
-  save() : Promise<T>{
-    return this.api.save(this.Url, this.toJSON(this.model));
+  save(model?: M) : R{
+    this.model = model || this.model;
+    return this.data.save(this.Reference+this.model.id, () => this.toJSON(this.model));
   }
 
-  get(id?: number): Promise<T>{
+  get(id?: number): R{
 
     var id : number = id || this.model.id;
 
     if (typeof id !== "undefined"){ //TODO: check if model.id is feasible
 
 
-      return this.api.get(this.Url, id).then((data) => {
+      return this.data.get(this.Reference+"/"+id, (data) => {
           if (this.model.id){
             return this.toInstance(this.model, data);
           }else{
@@ -65,20 +64,19 @@ export abstract class Resource<T extends IModel>{
 
   }
 
-  getList(): Promise<Array<IModel>>{
-    this.models = new Array<IModel>();
+  // getList(): Promise<Array<IModel>>{
+  //   this.models = new Array<IModel>();
+  //
+  //   return this.data.get(this.Url).then(data => {
+  //     data.forEach(item => {
+  //       this.models.push(this.toInstance(new this.Model(), item));
+  //     });
+  //     return this.models;
+  //   });
+  // }
 
-    return this.api.get(this.Url).then(data => {
-      data.forEach(item => {
-        this.models.push(this.toInstance(new this.Model(), item));
-      });
-      return this.models;
-    });
-  }
-
-  delete(): Promise<T>{
-    return this.api.delete(this.Url)
-      .then(() => this.model);
+  delete(): R{
+    return this.data.delete(this.Reference);
   }
 
 }
@@ -90,9 +88,9 @@ export function ModelMap<T>(model:  { new(): T }) {
     };
 }
 
-export function Url(url: string) {
+export function Reference<T>(ref: T) {
     return function <TFunction extends Function>(Target: TFunction): TFunction {
-        Target.prototype.Url = url;
+        Target.prototype.Reference = ref;
         return Target;
     };
 }
