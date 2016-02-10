@@ -25,15 +25,25 @@ var UserResource = (function (_super) {
         _super.apply(this, arguments);
     }
     UserResource = __decorate([
-        Resource_1.ModelMap(UserModel),
-        Resource_1.Reference("/users"), 
+        Resource_1.ModelMap(UserModel), 
         __metadata('design:paramtypes', [])
     ], UserResource);
     return UserResource;
 })(Resource_1.Resource);
+var UserApiResource = (function (_super) {
+    __extends(UserApiResource, _super);
+    function UserApiResource() {
+        _super.apply(this, arguments);
+    }
+    UserApiResource = __decorate([
+        Resource_1.Reference("/users"), 
+        __metadata('design:paramtypes', [])
+    ], UserApiResource);
+    return UserApiResource;
+})(UserResource);
 var api = new api_example_ts_1.DefaultApi();
 var storage = new api_example_ts_1.LocalStorage();
-var User = new UserResource(api);
+var User = new UserApiResource(api);
 var dave = new User.Model();
 dave.name = "David";
 dave.surname = "Mifsud";
@@ -48,12 +58,8 @@ var LocalUserResource = (function (_super) {
     function LocalUserResource() {
         _super.apply(this, arguments);
     }
-    LocalUserResource = __decorate([
-        Resource_1.ModelMap(UserModel), 
-        __metadata('design:paramtypes', [])
-    ], LocalUserResource);
     return LocalUserResource;
-})(Resource_1.Resource);
+})(UserResource);
 var LocalUser = new LocalUserResource(storage);
 var localUserModel = new UserModel();
 localUserModel.id = 32;
