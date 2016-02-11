@@ -14,38 +14,54 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var api_example_ts_1 = require("./api-example.ts");
 var Resource_1 = require("../lib/classes/Resource");
-var UserModel = (function () {
+var IModel_1 = require("../lib/interfaces/IModel");
+var API_1 = require("../lib/classes/API");
+var UserModel = (function (_super) {
+    __extends(UserModel, _super);
     function UserModel() {
-    }
-    return UserModel;
-})();
-var UserResource = (function (_super) {
-    __extends(UserResource, _super);
-    function UserResource() {
         _super.apply(this, arguments);
     }
-    UserResource = __decorate([
-        Resource_1.ModelMap(UserModel),
-        Resource_1.Reference("/users"), 
-        __metadata('design:paramtypes', [])
-    ], UserResource);
+    return UserModel;
+})(IModel_1.ISerializableModel);
+var UserApi = (function (_super) {
+    __extends(UserApi, _super);
+    function UserApi(data) {
+        _super.call(this, data, UserModel);
+        this.data = data;
+    }
+    UserApi = __decorate([
+        API_1.BaseUrl("/users"), 
+        __metadata('design:paramtypes', [Object])
+    ], UserApi);
+    return UserApi;
+})(API_1.ApiResource);
+var UserResource = (function (_super) {
+    __extends(UserResource, _super);
+    function UserResource(data) {
+        _super.call(this, data, UserModel);
+        this.data = data;
+    }
     return UserResource;
 })(Resource_1.Resource);
 var api = new api_example_ts_1.DefaultApi();
 var storage = new api_example_ts_1.LocalStorage();
-var User = new UserResource(api);
-var dave = new User.Model();
-dave.name = "David";
-dave.surname = "Mifsud";
-console.log(dave);
+var User = new UserApi(api);
+User.model.name = "Someone";
+User.model.surname = "Cool";
+User.save();
 User.model.id = 42;
 User.get().then(function (data) { return console.log(data); });
-User.get(42).then(function (data) {
+User.get(32).then(function (data) {
     console.log(data);
 });
+User.model = UserModel.toInstance(new UserModel(), { id: 69, name: "Davie", surname: "Jones" });
+User.save().then(function (model) {
+    console.log(model, model.toJSON());
+});
+console.log("===== Local Storage ====");
 var LocalUser = new UserResource(storage);
 var localUserModel = new UserModel();
-localUserModel.id = 32;
+localUserModel.id = 11;
 localUserModel.name = "God";
 localUserModel.surname = "Almighty";
 LocalUser.model = localUserModel;

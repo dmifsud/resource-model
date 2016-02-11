@@ -13,6 +13,10 @@ export class LocalStorage implements IData<Object>{
     return localStorageReturnVal;
   }
 
+  update(reference: string, data: Object, success? : Function, fail?: Function) : any{
+    return this.save(reference, data, success, fail);
+  }
+
   get(reference: string, success? : Function, fail?: Function) : Object{
     var returnedData = JSON.parse(localStorage.getItem(reference));
     if (success){
@@ -40,21 +44,45 @@ export class DefaultApi extends API implements IData<Promise<Object>>{
   }
 
   save(reference: string, data: Object, success? : Function, fail?: Function) : Promise<Object>{
-    console.log("Saving: "+this.baseUrl+reference);
+    console.log("POST: "+this.baseUrl+reference);
 
     return new Promise((resolve, reject) => {
+      var then = function(data){
+        resolve(data);
+        success(data);
+      },
+      error = function(data){
+        reject(data);
+        fail(data);
+      };
 
       if (true) {
-        resolve(data);
+        then(data);
       }
-      // else {
-      //   reject(Error("It broke"));
-      // }
+    });
+  }
+
+  update(reference: string, data: Object, success? : Function, fail?: Function) : Promise<Object>{
+    console.log("PUT: "+this.baseUrl+reference);
+
+    return new Promise((resolve, reject) => {
+      var then = function(data){
+        resolve(data);
+        success(data);
+      },
+      error = function(data){
+        reject(data);
+        fail(data);
+      };
+
+      if (true) {
+        then(data);
+      }
     });
   }
 
   get(reference: string, success? : Function, fail?: Function) : Promise<Object>{
-    console.log("Getting", this.baseUrl+reference);
+    console.log("GET", this.baseUrl+reference);
     return new Promise((resolve, reject) => {
 
       var then = function(data){
@@ -97,7 +125,7 @@ export class DefaultApi extends API implements IData<Promise<Object>>{
   }
 
   delete(urlReference: string) : Promise<Object>{
-    console.log("Deleting", this.baseUrl+urlReference);
+    console.log("DELETE", this.baseUrl+urlReference);
     return Promise.resolve("Resource <"+urlReference+"> deleted successfuly");
   }
 

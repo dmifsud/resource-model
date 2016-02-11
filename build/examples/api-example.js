@@ -24,6 +24,9 @@ var LocalStorage = (function () {
         }
         return localStorageReturnVal;
     };
+    LocalStorage.prototype.update = function (reference, data, success, fail) {
+        return this.save(reference, data, success, fail);
+    };
     LocalStorage.prototype.get = function (reference, success, fail) {
         var returnedData = JSON.parse(localStorage.getItem(reference));
         if (success) {
@@ -44,15 +47,37 @@ var DefaultApi = (function (_super) {
         this.baseUrl = this.getBaseUrl();
     }
     DefaultApi.prototype.save = function (reference, data, success, fail) {
-        console.log("Saving: " + this.baseUrl + reference);
+        console.log("POST: " + this.baseUrl + reference);
         return new es6_promise_1.Promise(function (resolve, reject) {
-            if (true) {
+            var then = function (data) {
                 resolve(data);
+                success(data);
+            }, error = function (data) {
+                reject(data);
+                fail(data);
+            };
+            if (true) {
+                then(data);
+            }
+        });
+    };
+    DefaultApi.prototype.update = function (reference, data, success, fail) {
+        console.log("PUT: " + this.baseUrl + reference);
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            var then = function (data) {
+                resolve(data);
+                success(data);
+            }, error = function (data) {
+                reject(data);
+                fail(data);
+            };
+            if (true) {
+                then(data);
             }
         });
     };
     DefaultApi.prototype.get = function (reference, success, fail) {
-        console.log("Getting", this.baseUrl + reference);
+        console.log("GET", this.baseUrl + reference);
         return new es6_promise_1.Promise(function (resolve, reject) {
             var then = function (data) {
                 resolve(data);
@@ -84,7 +109,7 @@ var DefaultApi = (function (_super) {
         return this;
     };
     DefaultApi.prototype.delete = function (urlReference) {
-        console.log("Deleting", this.baseUrl + urlReference);
+        console.log("DELETE", this.baseUrl + urlReference);
         return es6_promise_1.Promise.resolve("Resource <" + urlReference + "> deleted successfuly");
     };
     DefaultApi = __decorate([

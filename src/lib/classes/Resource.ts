@@ -1,78 +1,63 @@
 import {IData} from "../interfaces/IData";
-import {IModel} from "../interfaces/IModel";
+import {ISerializableModel} from "../interfaces/IModel";
 import {Promise} from "es6-promise";
 
 
 
-export abstract class Resource<M extends IModel>{
+export abstract class Resource<M extends ISerializableModel>{
   model: M;
-  models: Array<M>;
-
   //Annotation references
-  public Model : new() => M;
+  //public Model : new() => IModel;
   private Reference : any;
 
-  constructor(public data : IData<any>){
-    this.model = new this.Model();
+  constructor(public data : IData<any>, public Model:  { new(): M }){
+    this.model = new Model();
   }
 
 
-
-
-  //helper methods
-  private toInstance(obj: IModel, json: any) : any {
-
-    //return new T();
-
-      for (var propName in json) {
-          obj[propName] = json[propName]
-      }
-      return obj;
-  }
-
-  private toJSON(obj: any) : any{
-    var jsonObj = {};
-    for (var propName in obj){
-      jsonObj[propName] = obj[propName];
-    }
-    return jsonObj;
-  }
 
   save(model?: M) : Promise<M>{
     this.model = model || this.model;
+    var id = this.getReferenceIdentifier();
     return new Promise((resolve, reject) => {
-      this.data.save(this.Reference+this.model.id, this.toJSON(this.model),
-        function success(poto){
-          resolve(this.model);
-        },
-        function fail(msg){
-          reject(msg);
-        });
+
+      if (typeof this.model.getIdentifier() === "undefined"){
+        //ADD
+        this.data.save(id, this.model.toJSON(),
+          function success(poto){
+            resolve(this.model);
+          },
+          function fail(msg){
+            reject(msg);
+          });
+      }else{
+        //UPDATE
+        this.data.update(id, this.model.toJSON(),
+          function success(poto){
+            resolve(this.model);
+          },
+          function fail(msg){
+            reject(msg);
+          });
+      }
     });
   }
 
-  get(id?: number): Promise<M>{
+  get(id?: any): Promise<M>{
 
-    var id : number = id || this.model.id;
+    var id : any = this.getReferenceIdentifier(id);
 
-    if (typeof id !== "undefined"){ //TODO: check if model.id is feasible
-
-      return new Promise((resolve, reject) => {
-        this.data.get(this.Reference+"/"+id,
-          (success => {
-            if (this.model.id){
-              resolve(this.toInstance(this.model, success));
-            }else{
-              resolve(this.model = this.toInstance(new this.Model(), success));
-            }
-          }),
-          (failure => reject(failure)));
-        });
-
-    }else{
-      throw Error("No id reference found");
-    }
-
+    return new Promise((resolve, reject) => {
+      this.data.get(id,
+        (success => {
+          if (this.model.id){
+            resolve(this.model.toInstance(success));
+          }else{
+            resolve(this.model = ISerializableModel.toInstance(new this.Model(), success));
+          }
+        }),
+        (failure => reject(failure)));
+      });
   }
 
   // getList(): Promise<Array<IModel>>{
@@ -89,6 +74,10 @@ export abstract class Resource<M extends IModel>{
   delete(): Promise<M>{
     //return this.data.delete(this.Reference);
     return null;
+  }
+
+  getReferenceIdentifier(overrideId? : any) : any{
+      return overrideId || this.model.getIdentifier();
   }
 
 }

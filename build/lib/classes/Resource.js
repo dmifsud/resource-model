@@ -1,54 +1,51 @@
+var IModel_1 = require("../interfaces/IModel");
 var es6_promise_1 = require("es6-promise");
 var Resource = (function () {
-    function Resource(data) {
+    function Resource(data, Model) {
         this.data = data;
-        this.model = new this.Model();
+        this.Model = Model;
+        this.model = new Model();
     }
-    Resource.prototype.toInstance = function (obj, json) {
-        for (var propName in json) {
-            obj[propName] = json[propName];
-        }
-        return obj;
-    };
-    Resource.prototype.toJSON = function (obj) {
-        var jsonObj = {};
-        for (var propName in obj) {
-            jsonObj[propName] = obj[propName];
-        }
-        return jsonObj;
-    };
     Resource.prototype.save = function (model) {
         var _this = this;
         this.model = model || this.model;
+        var id = this.getReferenceIdentifier();
         return new es6_promise_1.Promise(function (resolve, reject) {
-            _this.data.save(_this.Reference + _this.model.id, _this.toJSON(_this.model), function success(poto) {
-                resolve(this.model);
-            }, function fail(msg) {
-                reject(msg);
-            });
+            if (typeof _this.model.getIdentifier() === "undefined") {
+                _this.data.save(id, _this.model.toJSON(), function success(poto) {
+                    resolve(this.model);
+                }, function fail(msg) {
+                    reject(msg);
+                });
+            }
+            else {
+                _this.data.update(id, _this.model.toJSON(), function success(poto) {
+                    resolve(this.model);
+                }, function fail(msg) {
+                    reject(msg);
+                });
+            }
         });
     };
     Resource.prototype.get = function (id) {
         var _this = this;
-        var id = id || this.model.id;
-        if (typeof id !== "undefined") {
-            return new es6_promise_1.Promise(function (resolve, reject) {
-                _this.data.get(_this.Reference + "/" + id, (function (success) {
-                    if (_this.model.id) {
-                        resolve(_this.toInstance(_this.model, success));
-                    }
-                    else {
-                        resolve(_this.model = _this.toInstance(new _this.Model(), success));
-                    }
-                }), (function (failure) { return reject(failure); }));
-            });
-        }
-        else {
-            throw Error("No id reference found");
-        }
+        var id = this.getReferenceIdentifier(id);
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            _this.data.get(id, (function (success) {
+                if (_this.model.id) {
+                    resolve(_this.model.toInstance(success));
+                }
+                else {
+                    resolve(_this.model = IModel_1.ISerializableModel.toInstance(new _this.Model(), success));
+                }
+            }), (function (failure) { return reject(failure); }));
+        });
     };
     Resource.prototype.delete = function () {
         return null;
+    };
+    Resource.prototype.getReferenceIdentifier = function (overrideId) {
+        return overrideId || this.model.getIdentifier();
     };
     return Resource;
 })();
