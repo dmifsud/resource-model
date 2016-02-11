@@ -14,11 +14,10 @@ class UserModel implements IModel{
   // addresses: Array<AddressModel>;
 }
 
-@ModelMap(UserModel)
-class UserResource<T> extends Resource<UserModel, T>{}
 
+@ModelMap(UserModel)
 @Reference("/users")
-class UserApiResource extends UserResource<Promise<UserModel>>{}
+class UserResource extends Resource<UserModel>{}
 
 
 
@@ -27,7 +26,7 @@ var api : DefaultApi = new DefaultApi();
 var storage : LocalStorage = new LocalStorage();
 
 //Ideally generated from service layer
-var User = new UserApiResource(api);
+var User = new UserResource(api);
 
 //add custom UserModel
 var dave : UserModel = new User.Model();
@@ -48,15 +47,13 @@ User.get(42).then(data => {
 //   console.log(list);
 // });
 
-//Using local storage
-class LocalUserResource extends UserResource<any>{}
-//TODO: find a way to eliminate the second generic argument.
-//It should automatically "know" what data type is returned from IData class
 
-var LocalUser : LocalUserResource = new LocalUserResource(storage);
+var LocalUser : UserResource = new UserResource(storage);
 
 var localUserModel : UserModel = new UserModel();
 localUserModel.id = 32;
 localUserModel.name = "God";
 localUserModel.surname = "Almighty";
-LocalUser.save(localUserModel);
+LocalUser.model = localUserModel;
+LocalUser.save();
+LocalUser.get().then((user) => console.log('local user is', user));

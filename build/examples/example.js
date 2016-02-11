@@ -25,25 +25,15 @@ var UserResource = (function (_super) {
         _super.apply(this, arguments);
     }
     UserResource = __decorate([
-        Resource_1.ModelMap(UserModel), 
+        Resource_1.ModelMap(UserModel),
+        Resource_1.Reference("/users"), 
         __metadata('design:paramtypes', [])
     ], UserResource);
     return UserResource;
 })(Resource_1.Resource);
-var UserApiResource = (function (_super) {
-    __extends(UserApiResource, _super);
-    function UserApiResource() {
-        _super.apply(this, arguments);
-    }
-    UserApiResource = __decorate([
-        Resource_1.Reference("/users"), 
-        __metadata('design:paramtypes', [])
-    ], UserApiResource);
-    return UserApiResource;
-})(UserResource);
 var api = new api_example_ts_1.DefaultApi();
 var storage = new api_example_ts_1.LocalStorage();
-var User = new UserApiResource(api);
+var User = new UserResource(api);
 var dave = new User.Model();
 dave.name = "David";
 dave.surname = "Mifsud";
@@ -53,17 +43,12 @@ User.get().then(function (data) { return console.log(data); });
 User.get(42).then(function (data) {
     console.log(data);
 });
-var LocalUserResource = (function (_super) {
-    __extends(LocalUserResource, _super);
-    function LocalUserResource() {
-        _super.apply(this, arguments);
-    }
-    return LocalUserResource;
-})(UserResource);
-var LocalUser = new LocalUserResource(storage);
+var LocalUser = new UserResource(storage);
 var localUserModel = new UserModel();
 localUserModel.id = 32;
 localUserModel.name = "God";
 localUserModel.surname = "Almighty";
-LocalUser.save(localUserModel);
+LocalUser.model = localUserModel;
+LocalUser.save();
+LocalUser.get().then(function (user) { return console.log('local user is', user); });
 //# sourceMappingURL=example.js.map

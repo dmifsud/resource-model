@@ -17,15 +17,22 @@ var es6_promise_1 = require("es6-promise");
 var LocalStorage = (function () {
     function LocalStorage() {
     }
-    LocalStorage.prototype.save = function (reference, dataLogic) {
-        localStorage.setItem(reference, JSON.stringify(dataLogic()));
+    LocalStorage.prototype.save = function (reference, data, success, fail) {
+        var localStorageReturnVal = localStorage.setItem(reference, JSON.stringify(data));
+        if (success) {
+            success(localStorageReturnVal);
+        }
+        return localStorageReturnVal;
     };
-    LocalStorage.prototype.get = function (reference, dataLogic) {
+    LocalStorage.prototype.get = function (reference, success, fail) {
         var returnedData = JSON.parse(localStorage.getItem(reference));
-        return dataLogic(returnedData);
+        if (success) {
+            success(returnedData);
+        }
+        return returnedData;
     };
-    LocalStorage.prototype.delete = function (reference) {
-        localStorage.removeItem(reference);
+    LocalStorage.prototype.delete = function (reference, success, fail) {
+        return localStorage.removeItem(reference);
     };
     return LocalStorage;
 })();
@@ -36,36 +43,45 @@ var DefaultApi = (function (_super) {
         _super.call(this);
         this.baseUrl = this.getBaseUrl();
     }
-    DefaultApi.prototype.save = function (referenceUrl, dataLogic) {
-        console.log("Saving: " + this.baseUrl + referenceUrl);
+    DefaultApi.prototype.save = function (reference, data, success, fail) {
+        console.log("Saving: " + this.baseUrl + reference);
         return new es6_promise_1.Promise(function (resolve, reject) {
             if (true) {
-                resolve(dataLogic());
+                resolve(data);
             }
         });
     };
-    DefaultApi.prototype.get = function (referenceUrl, dataLogic) {
-        console.log("Getting", this.baseUrl + referenceUrl);
-        var getPromise = new es6_promise_1.Promise(function (resolve, reject) {
+    DefaultApi.prototype.get = function (reference, success, fail) {
+        console.log("Getting", this.baseUrl + reference);
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            var then = function (data) {
+                resolve(data);
+                success(data);
+            }, error = function (data) {
+                reject(data);
+                fail(data);
+            };
             var mockModel = {
-                id: referenceUrl || new Date().getTime(),
+                id: reference || new Date().getTime(),
                 name: "David",
                 surname: "Mifsud"
             };
             if (true) {
-                if (typeof referenceUrl === "undefined") {
-                    resolve([mockModel, {
+                if (typeof reference === "undefined") {
+                    then([mockModel, {
                             id: new Date().getTime(),
                             name: "John",
                             surname: "Doe"
                         }]);
                 }
                 else {
-                    resolve(mockModel);
+                    then(mockModel);
                 }
             }
         });
-        return getPromise.then(function (data) { return dataLogic(data); });
+    };
+    DefaultApi.prototype.filter = function (value) {
+        return this;
     };
     DefaultApi.prototype.delete = function (urlReference) {
         console.log("Deleting", this.baseUrl + urlReference);

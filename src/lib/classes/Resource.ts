@@ -4,7 +4,7 @@ import {Promise} from "es6-promise";
 
 
 
-export abstract class Resource<M extends IModel, R>{
+export abstract class Resource<M extends IModel>{
   model: M;
   models: Array<M>;
 
@@ -38,25 +38,36 @@ export abstract class Resource<M extends IModel, R>{
     return jsonObj;
   }
 
-  save(model?: M) : R{
+  save(model?: M) : Promise<M>{
     this.model = model || this.model;
-    return this.data.save(this.Reference+this.model.id, () => this.toJSON(this.model));
+    return new Promise((resolve, reject) => {
+      this.data.save(this.Reference+this.model.id, this.toJSON(this.model),
+        function success(poto){
+          resolve(this.model);
+        },
+        function fail(msg){
+          reject(msg);
+        });
+    });
   }
 
-  get(id?: number): R{
+  get(id?: number): Promise<M>{
 
     var id : number = id || this.model.id;
 
     if (typeof id !== "undefined"){ //TODO: check if model.id is feasible
 
-
-      return this.data.get(this.Reference+"/"+id, (data) => {
-          if (this.model.id){
-            return this.toInstance(this.model, data);
-          }else{
-            return this.model = this.toInstance(new this.Model(), data);
-          }
-      });
+      return new Promise((resolve, reject) => {
+        this.data.get(this.Reference+"/"+id,
+          (success => {
+            if (this.model.id){
+              resolve(this.toInstance(this.model, success));
+            }else{
+              resolve(this.model = this.toInstance(new this.Model(), success));
+            }
+          }),
+          (failure => reject(failure)));
+        });
 
     }else{
       throw Error("No id reference found");
@@ -75,8 +86,9 @@ export abstract class Resource<M extends IModel, R>{
   //   });
   // }
 
-  delete(): R{
-    return this.data.delete(this.Reference);
+  delete(): Promise<M>{
+    //return this.data.delete(this.Reference);
+    return null;
   }
 
 }

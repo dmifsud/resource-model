@@ -1,3 +1,4 @@
+var es6_promise_1 = require("es6-promise");
 var Resource = (function () {
     function Resource(data) {
         this.data = data;
@@ -19,19 +20,27 @@ var Resource = (function () {
     Resource.prototype.save = function (model) {
         var _this = this;
         this.model = model || this.model;
-        return this.data.save(this.Reference + this.model.id, function () { return _this.toJSON(_this.model); });
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            _this.data.save(_this.Reference + _this.model.id, _this.toJSON(_this.model), function success(poto) {
+                resolve(this.model);
+            }, function fail(msg) {
+                reject(msg);
+            });
+        });
     };
     Resource.prototype.get = function (id) {
         var _this = this;
         var id = id || this.model.id;
         if (typeof id !== "undefined") {
-            return this.data.get(this.Reference + "/" + id, function (data) {
-                if (_this.model.id) {
-                    return _this.toInstance(_this.model, data);
-                }
-                else {
-                    return _this.model = _this.toInstance(new _this.Model(), data);
-                }
+            return new es6_promise_1.Promise(function (resolve, reject) {
+                _this.data.get(_this.Reference + "/" + id, (function (success) {
+                    if (_this.model.id) {
+                        resolve(_this.toInstance(_this.model, success));
+                    }
+                    else {
+                        resolve(_this.model = _this.toInstance(new _this.Model(), success));
+                    }
+                }), (function (failure) { return reject(failure); }));
             });
         }
         else {
@@ -39,7 +48,7 @@ var Resource = (function () {
         }
     };
     Resource.prototype.delete = function () {
-        return this.data.delete(this.Reference);
+        return null;
     };
     return Resource;
 })();
