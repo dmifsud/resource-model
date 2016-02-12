@@ -8,5 +8,7 @@ export interface IData<T>{
 
   get(reference: any, success? : Function, fail?: Function) : T;
 
+  filter(reference: any) : IData<T>;
+
   delete<D>(reference: any, success? : Function, fail?: Function): D;
 }

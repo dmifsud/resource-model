@@ -46,11 +46,16 @@ var UserResource = (function (_super) {
 var api = new api_example_ts_1.DefaultApi();
 var storage = new api_example_ts_1.LocalStorage();
 var User = new UserApi(api);
+User.data;
 User.model.name = "Someone";
 User.model.surname = "Cool";
 User.save();
 User.model.id = 42;
 User.get().then(function (data) { return console.log(data); });
+User.getList().then(function (data) {
+    console.log(data);
+    console.log(data[0].model.name);
+});
 User.get(32).then(function (data) {
     console.log(data);
 });

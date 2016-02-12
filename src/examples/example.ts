@@ -1,5 +1,5 @@
 import {DefaultApi,LocalStorage} from "./api-example.ts";
-import {Resource,ModelMap,Reference} from "../lib/classes/Resource";
+import {Resource,ModelMap} from "../lib/classes/Resource";
 import {ISerializableModel} from "../lib/interfaces/IModel";
 import {IData} from "../lib/interfaces/IData";
 import {ApiResource,BaseUrl} from "../lib/classes/API";
@@ -34,15 +34,13 @@ class UserResource extends Resource<UserModel>{
 }
 
 
-
-
 //only one data layer class instance should exist in an app
 var api : DefaultApi = new DefaultApi();
 var storage : LocalStorage = new LocalStorage();
 
 //Ideally generated from service layer
 var User = new UserApi(api);
-
+User.data
 //add custom UserModel
 // var dave : UserModel = new User.Model();
 // dave.name = "David";
@@ -56,6 +54,11 @@ User.save();
 User.model.id = 42;
 //GET /users/42
 User.get().then(data => console.log(data)); //User.model is also updated
+
+User.getList().then(data => {
+  console.log(data);
+  console.log(data[0].model.name);
+});
 
 //Or it can be directly passed via get
 //GET /users/32

@@ -2,18 +2,14 @@ import {IData} from "../interfaces/IData";
 import {ISerializableModel} from "../interfaces/IModel";
 import {Promise} from "es6-promise";
 
-
-
-export abstract class Resource<M extends ISerializableModel>{
-  model: M;
-  //Annotation references
-  //public Model : new() => IModel;
-  private Reference : any;
-
+abstract class IResource<M extends ISerializableModel>{
+  model: M
   constructor(public data : IData<any>, public Model:  { new(): M }){
     this.model = new Model();
   }
+}
 
+export class Resource<M extends ISerializableModel> extends IResource<M>{
 
 
   save(model?: M) : Promise<M>{
@@ -60,6 +56,23 @@ export abstract class Resource<M extends ISerializableModel>{
       });
   }
 
+  getList<R extends IResource<M>>() : Promise<Array<R>>{
+    var list : Array<R>;
+
+    return new Promise((resolve, reject) => {
+      var resource = new Resource<M>(this.data, this.Model);
+      resource.model.id = 1;
+
+      var resource2 = new Resource<M>(this.data, this.Model);
+      resource.model.id = 2;
+
+      list.push(resource);
+      list.push(resource2);
+
+      resolve(list);
+    });
+  }
+
   // getList(): Promise<Array<IModel>>{
   //   this.models = new Array<IModel>();
   //
@@ -85,13 +98,6 @@ export abstract class Resource<M extends ISerializableModel>{
 export function ModelMap<T>(model:  { new(): T }) {
     return function <TFunction extends Function>(Target: TFunction): TFunction {
         Target.prototype.Model = model;
-        return Target;
-    };
-}
-
-export function Reference<T>(ref: T) {
-    return function <TFunction extends Function>(Target: TFunction): TFunction {
-        Target.prototype.Reference = ref;
         return Target;
     };
 }

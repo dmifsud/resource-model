@@ -1,10 +1,22 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var IModel_1 = require("../interfaces/IModel");
 var es6_promise_1 = require("es6-promise");
-var Resource = (function () {
-    function Resource(data, Model) {
+var IResource = (function () {
+    function IResource(data, Model) {
         this.data = data;
         this.Model = Model;
         this.model = new Model();
+    }
+    return IResource;
+})();
+var Resource = (function (_super) {
+    __extends(Resource, _super);
+    function Resource() {
+        _super.apply(this, arguments);
     }
     Resource.prototype.save = function (model) {
         var _this = this;
@@ -41,6 +53,19 @@ var Resource = (function () {
             }), (function (failure) { return reject(failure); }));
         });
     };
+    Resource.prototype.getList = function () {
+        var _this = this;
+        var list;
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            var resource = new Resource(_this.data, _this.Model);
+            resource.model.id = 1;
+            var resource2 = new Resource(_this.data, _this.Model);
+            resource.model.id = 2;
+            list.push(resource);
+            list.push(resource2);
+            resolve(list);
+        });
+    };
     Resource.prototype.delete = function () {
         return null;
     };
@@ -48,7 +73,7 @@ var Resource = (function () {
         return overrideId || this.model.getIdentifier();
     };
     return Resource;
-})();
+})(IResource);
 exports.Resource = Resource;
 function ModelMap(model) {
     return function (Target) {
@@ -57,11 +82,4 @@ function ModelMap(model) {
     };
 }
 exports.ModelMap = ModelMap;
-function Reference(ref) {
-    return function (Target) {
-        Target.prototype.Reference = ref;
-        return Target;
-    };
-}
-exports.Reference = Reference;
 //# sourceMappingURL=Resource.js.map

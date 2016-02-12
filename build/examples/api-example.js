@@ -27,6 +27,9 @@ var LocalStorage = (function () {
     LocalStorage.prototype.update = function (reference, data, success, fail) {
         return this.save(reference, data, success, fail);
     };
+    LocalStorage.prototype.filter = function (reference) {
+        return this;
+    };
     LocalStorage.prototype.get = function (reference, success, fail) {
         var returnedData = JSON.parse(localStorage.getItem(reference));
         if (success) {

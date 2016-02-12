@@ -17,6 +17,10 @@ export class LocalStorage implements IData<Object>{
     return this.save(reference, data, success, fail);
   }
 
+  filter(reference: string) : LocalStorage{
+    return this;
+  }
+
   get(reference: string, success? : Function, fail?: Function) : Object{
     var returnedData = JSON.parse(localStorage.getItem(reference));
     if (success){
