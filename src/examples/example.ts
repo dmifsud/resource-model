@@ -1,46 +1,32 @@
 import {DefaultApi,LocalStorage} from "./api-example.ts";
-import {Resource,ModelMap} from "../lib/classes/Resource";
-import {ISerializableModel} from "../lib/interfaces/IModel";
-import {IData} from "../lib/interfaces/IData";
-import {ApiResource,BaseUrl} from "../lib/classes/API";
-
-
-
-class UserModel extends ISerializableModel{
-
-  id: number;
-
-  name: string;
-
-  surname: string;
-
-  // addresses: Array<AddressModel>;
-}
-
-@BaseUrl("/users")
-class UserApi extends ApiResource<UserModel>{
-    constructor(public data: IData<any>){
-      super(data, UserModel);
-    }
-}
-
-
-
-//Plain Resource - Not restricted to just API type data layers
-class UserResource extends Resource<UserModel>{
-  constructor(public data: IData<any>){
-    super(data, UserModel);
-  }
-}
+import {UserModel,UserApi,UsersApi,UserResource} from "./resource-example";
 
 
 //only one data layer class instance should exist in an app
 var api : DefaultApi = new DefaultApi();
 var storage : LocalStorage = new LocalStorage();
 
+var UsersList = new UsersApi(api, [{id: 2, name:"Winston", surname: "Church"}]);
+
+// UsersList.save().then(data => {
+//   console.log(data[0].model);
+// });
+
+UsersList.list[0].save().then(data => {
+  console.log(data.name + " " + data.surname + " was saved from list");
+});
+
 //Ideally generated from service layer
-var User = new UserApi(api);
-User.data
+class UserApiModel extends UserApi{
+  constructor(){
+    super(api);
+  }
+}
+
+//Final Result
+var User = new UserApiModel();
+
+
 //add custom UserModel
 // var dave : UserModel = new User.Model();
 // dave.name = "David";
@@ -55,9 +41,10 @@ User.model.id = 42;
 //GET /users/42
 User.get().then(data => console.log(data)); //User.model is also updated
 
+console.log('getting this');
 User.getList().then(data => {
   console.log(data);
-  console.log(data[0].model.name);
+  console.log(data[0].model.id);
 });
 
 //Or it can be directly passed via get
@@ -66,7 +53,8 @@ User.get(32).then(data => {
   console.log(data);
 });
 
-User.model = UserModel.toInstance(new UserModel(),{id: 69, name: "Davie", surname: "Jones"});
+User.model = new UserModel({id: 69, name: "Davie", surname: "Jones"});
+console.log(User.model);
 //PUT /users/69
 User.save().then(model => {
   console.log(model, model.toJSON());

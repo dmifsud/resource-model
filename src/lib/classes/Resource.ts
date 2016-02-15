@@ -1,19 +1,26 @@
 import {IData} from "../interfaces/IData";
-import {ISerializableModel} from "../interfaces/IModel";
+import {SerializableModel} from "./SerializableModel";
+import {IResource} from "../interfaces/IResource";
 import {Promise} from "es6-promise";
 
-abstract class IResource<M extends ISerializableModel>{
-  model: M
-  constructor(public data : IData<any>, public Model:  { new(): M }){
-    this.model = new Model();
+export class Resource<M extends SerializableModel> implements IResource<M>{
+
+  model: M;
+
+  //casting of <M>new SerializableModel avoids this: public Model:  { new(): M }
+  //as a parameter
+  constructor(public data : IData<any>, model? : M){
+    this.model = model || this.instantiateNewModel();
   }
-}
 
-export class Resource<M extends ISerializableModel> extends IResource<M>{
-
+  instantiateNewModel() : M{
+    return <M>new SerializableModel();
+  }
 
   save(model?: M) : Promise<M>{
+
     this.model = model || this.model;
+
     var id = this.getReferenceIdentifier();
     return new Promise((resolve, reject) => {
 
@@ -49,40 +56,29 @@ export class Resource<M extends ISerializableModel> extends IResource<M>{
           if (this.model.id){
             resolve(this.model.toInstance(success));
           }else{
-            resolve(this.model = ISerializableModel.toInstance(new this.Model(), success));
+            resolve(this.model = SerializableModel.toInstance(this.instantiateNewModel(), success));
           }
         }),
         (failure => reject(failure)));
       });
   }
 
-  getList<R extends IResource<M>>() : Promise<Array<R>>{
+  getList<R extends Resource<M>>() : Promise<Array<R>>{
     var list : Array<R>;
 
     return new Promise((resolve, reject) => {
-      var resource = new Resource<M>(this.data, this.Model);
+      var resource = <R>new Resource(this.data);
       resource.model.id = 1;
 
-      var resource2 = new Resource<M>(this.data, this.Model);
+      var resource2 = <R>new Resource(this.data);
       resource.model.id = 2;
 
       list.push(resource);
-      list.push(resource2);
+      // list.push(resource2);
 
       resolve(list);
     });
   }
-
-  // getList(): Promise<Array<IModel>>{
-  //   this.models = new Array<IModel>();
-  //
-  //   return this.data.get(this.Url).then(data => {
-  //     data.forEach(item => {
-  //       this.models.push(this.toInstance(new this.Model(), item));
-  //     });
-  //     return this.models;
-  //   });
-  // }
 
   delete(): Promise<M>{
     //return this.data.delete(this.Reference);
@@ -91,6 +87,31 @@ export class Resource<M extends ISerializableModel> extends IResource<M>{
 
   getReferenceIdentifier(overrideId? : any) : any{
       return overrideId || this.model.getIdentifier();
+  }
+
+}
+
+//TODO: WIP
+export abstract class ResourceList<R extends Resource<SerializableModel>>{
+  list: Array<R>;
+  resourceReference: string;
+  constructor(public data: IData<any>, public resourceModel: { new(data:IData<any>): R }, list? : Object[]){
+    if (list.length > 0){
+      this.list = new Array<R>();
+      list.forEach(pojo => {
+        this.list.push(new resourceModel(data));
+      });
+    }
+  }
+
+  save(list? : Array<R>) : Promise<Array<R>>{
+    var itemList: Array<R> = list || this.list;
+    return new Promise((resolve, reject) => {
+      this.data.save(this.resourceReference, itemList, function(data){
+        // this.list.push(new this.resourceModel(data))
+        resolve(data);
+      });
+    });
   }
 
 }

@@ -16,8 +16,11 @@
     "./typings/es6-promise/es6-promise.d.ts",
     "src/examples/example.ts",
     "src/examples/api-example.ts",
+    "src/examples/resource-example.ts",
     "src/lib/classes/Resource.ts",
+    "src/lib/classes/SerializableModel.ts",
     "src/lib/interfaces/IData.ts",
-    "src/lib/interfaces/IModel.ts"
+    "src/lib/interfaces/ISerializableModel.ts",
+    "src/lib/interfaces/IResource.ts"
   ]
 }

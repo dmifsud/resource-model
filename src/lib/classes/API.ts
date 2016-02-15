@@ -1,5 +1,5 @@
 import {Resource} from "./Resource";
-import {ISerializableModel} from "../interfaces/IModel";
+import {SerializableModel} from "./SerializableModel";
 
 export abstract class API{
 
@@ -8,7 +8,7 @@ export abstract class API{
   }
 }
 
-export class ApiResource<T extends ISerializableModel> extends Resource<T>{
+export class ApiResource<T extends SerializableModel> extends Resource<T>{
 
   protected getBaseUrl() : string{
     return null;

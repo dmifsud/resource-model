@@ -1,23 +1,13 @@
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var IModel_1 = require("../interfaces/IModel");
+var SerializableModel_1 = require("./SerializableModel");
 var es6_promise_1 = require("es6-promise");
-var IResource = (function () {
-    function IResource(data, Model) {
+var Resource = (function () {
+    function Resource(data, model) {
         this.data = data;
-        this.Model = Model;
-        this.model = new Model();
+        this.model = model || this.instantiateNewModel();
     }
-    return IResource;
-})();
-var Resource = (function (_super) {
-    __extends(Resource, _super);
-    function Resource() {
-        _super.apply(this, arguments);
-    }
+    Resource.prototype.instantiateNewModel = function () {
+        return new SerializableModel_1.SerializableModel();
+    };
     Resource.prototype.save = function (model) {
         var _this = this;
         this.model = model || this.model;
@@ -48,7 +38,7 @@ var Resource = (function (_super) {
                     resolve(_this.model.toInstance(success));
                 }
                 else {
-                    resolve(_this.model = IModel_1.ISerializableModel.toInstance(new _this.Model(), success));
+                    resolve(_this.model = SerializableModel_1.SerializableModel.toInstance(_this.instantiateNewModel(), success));
                 }
             }), (function (failure) { return reject(failure); }));
         });
@@ -57,12 +47,11 @@ var Resource = (function (_super) {
         var _this = this;
         var list;
         return new es6_promise_1.Promise(function (resolve, reject) {
-            var resource = new Resource(_this.data, _this.Model);
+            var resource = new Resource(_this.data);
             resource.model.id = 1;
-            var resource2 = new Resource(_this.data, _this.Model);
+            var resource2 = new Resource(_this.data);
             resource.model.id = 2;
             list.push(resource);
-            list.push(resource2);
             resolve(list);
         });
     };
@@ -73,8 +62,32 @@ var Resource = (function (_super) {
         return overrideId || this.model.getIdentifier();
     };
     return Resource;
-})(IResource);
+})();
 exports.Resource = Resource;
+var ResourceList = (function () {
+    function ResourceList(data, resourceModel, list) {
+        var _this = this;
+        this.data = data;
+        this.resourceModel = resourceModel;
+        if (list.length > 0) {
+            this.list = new Array();
+            list.forEach(function (pojo) {
+                _this.list.push(new resourceModel(data));
+            });
+        }
+    }
+    ResourceList.prototype.save = function (list) {
+        var _this = this;
+        var itemList = list || this.list;
+        return new es6_promise_1.Promise(function (resolve, reject) {
+            _this.data.save(_this.resourceReference, itemList, function (data) {
+                resolve(data);
+            });
+        });
+    };
+    return ResourceList;
+})();
+exports.ResourceList = ResourceList;
 function ModelMap(model) {
     return function (Target) {
         Target.prototype.Model = model;

@@ -1,22 +1,22 @@
-var ISerializableModel = (function () {
-    function ISerializableModel(pojo) {
-        if (typeof pojo === "Object") {
+var SerializableModel = (function () {
+    function SerializableModel(pojo) {
+        if (typeof pojo === "object") {
             this.toInstance(pojo);
         }
     }
-    ISerializableModel.prototype.getIdentifier = function () {
+    SerializableModel.prototype.getIdentifier = function () {
         return this.id;
     };
-    ISerializableModel.toInstance = function (obj, json) {
+    SerializableModel.toInstance = function (obj, json) {
+        return json;
+    };
+    SerializableModel.prototype.toInstance = function (json) {
         for (var propName in json) {
-            obj[propName] = json[propName];
+            this[propName] = json[propName];
         }
-        return obj;
+        return this;
     };
-    ISerializableModel.prototype.toInstance = function (json) {
-        return ISerializableModel.toInstance(this, json);
-    };
-    ISerializableModel.toJSON = function (obj) {
+    SerializableModel.toJSON = function (obj) {
         var jsonObj = {};
         for (var propName in obj) {
             if (typeof obj[propName] !== "function") {
@@ -25,10 +25,10 @@ var ISerializableModel = (function () {
         }
         return jsonObj;
     };
-    ISerializableModel.prototype.toJSON = function () {
-        return ISerializableModel.toJSON(this);
+    SerializableModel.prototype.toJSON = function () {
+        return SerializableModel.toJSON(this);
     };
-    return ISerializableModel;
+    return SerializableModel;
 })();
-exports.ISerializableModel = ISerializableModel;
+exports.SerializableModel = SerializableModel;
 //# sourceMappingURL=IModel.js.map
