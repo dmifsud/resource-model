@@ -2,17 +2,9 @@ import {ResourceList,Resource} from "../lib/classes/Resource";
 import {ApiResource,BaseUrl} from "../lib/classes/API";
 import {IData} from "../lib/interfaces/IData";
 import {SerializableModel} from "../lib/classes/SerializableModel";
+import {UserModel} from "./model-example";
 
-export class UserModel extends SerializableModel{
 
-  id: number;
-
-  name: string;
-
-  surname: string;
-
-  // addresses: Array<AddressModel>;
-}
 
 @BaseUrl("/users")
 export class UserApi extends ApiResource<UserModel>{}

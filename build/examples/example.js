@@ -5,6 +5,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var api_example_ts_1 = require("./api-example.ts");
 var resource_example_1 = require("./resource-example");
+var model_example_1 = require("./model-example");
 var api = new api_example_ts_1.DefaultApi();
 var storage = new api_example_ts_1.LocalStorage();
 var UsersList = new resource_example_1.UsersApi(api, [{ id: 2, name: "Winston", surname: "Church" }]);
@@ -32,14 +33,14 @@ User.getList().then(function (data) {
 User.get(32).then(function (data) {
     console.log(data);
 });
-User.model = new resource_example_1.UserModel({ id: 69, name: "Davie", surname: "Jones" });
+User.model = new model_example_1.UserModel({ id: 69, name: "Davie", surname: "Jones" });
 console.log(User.model);
 User.save().then(function (model) {
     console.log(model, model.toJSON());
 });
 console.log("===== Local Storage ====");
 var LocalUser = new resource_example_1.UserResource(storage);
-var localUserModel = new resource_example_1.UserModel();
+var localUserModel = new model_example_1.UserModel();
 localUserModel.id = 11;
 localUserModel.name = "God";
 localUserModel.surname = "Almighty";

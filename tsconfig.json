@@ -17,6 +17,7 @@
     "src/examples/example.ts",
     "src/examples/api-example.ts",
     "src/examples/resource-example.ts",
+    "src/examples/model-example.ts",
     "src/lib/classes/Resource.ts",
     "src/lib/classes/SerializableModel.ts",
     "src/lib/interfaces/IData.ts",

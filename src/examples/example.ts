@@ -1,5 +1,6 @@
 import {DefaultApi,LocalStorage} from "./api-example.ts";
-import {UserModel,UserApi,UsersApi,UserResource} from "./resource-example";
+import {UserApi,UsersApi,UserResource} from "./resource-example";
+import {UserModel} from "./model-example";
 
 
 //only one data layer class instance should exist in an app
