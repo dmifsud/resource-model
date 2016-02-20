@@ -29,8 +29,13 @@ export abstract class Source<M extends ModelInterface> implements SourceInterfac
     return null;
   }
 
-  get(id: any): Promise<M>{
-    return null;
+  get(id?: any): Promise<M>{
+    return new Promise((resolve,reject) => {
+      this.data.get(this.getReferenceIdentifier(), success =>{
+        this.model.fromJSON(success);
+        resolve(this.model);
+      })
+    });
   }
 
   delete(id: any) : Promise<M>{

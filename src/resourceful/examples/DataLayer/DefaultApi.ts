@@ -66,9 +66,9 @@ export class DefaultApi extends API implements DataInterface{
 
 
       var mockModel = { //NOTE: this is a hardcoded mock
-        id: reference || new Date().getTime(),
-        name: "David",
-        surname: "Mifsud"
+        id: new Date().getTime(),
+        name: "Davy",
+        surname: "Jones"
       };
 
       if (true) {

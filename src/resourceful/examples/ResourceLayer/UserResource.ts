@@ -6,11 +6,12 @@ import {DefaultApi} from "../DataLayer/DefaultApi";
 import {SourceInterface} from "../../lib/SourceLayer/Sourceful";
 
 var kernel = new Kernel();
+
 class UserModel extends Model{
   @index
-  id: number = 42;
-  name: string = "David";
-  surname: string = "Mifsud";
+  id: number;
+  name: string;
+  surname: string;
 }
 
 
@@ -24,13 +25,29 @@ class UserResource extends ApiResource<UserModel>{
 
 // // bind
 kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
-kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Transient));
+kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Singleton));
 kernel.bind(new TypeBinding<SourceInterface>("SourceInterface", UserResource));
 
 // kernel.bind(new TypeBinding<FooInterface>("FooInterface", Bar));
 
-var userResource = kernel.resolve<UserResource>("SourceInterface");
+//experimenting. Will need refactor
+export class UserApiResource{
+  container: UserResource;
 
-export function getUserResource(){
-  return userResource;
-};
+  constructor(){
+    this.container = UserApiResource.one();
+  }
+
+  static one(id?: any) : UserResource{
+    var newResource = kernel.resolve<UserResource>("SourceInterface");
+
+    if (typeof id !== "undefined"){ //TODO: improve by finding exact identifier type
+      newResource.model[newResource.model.getIdentifierProperty()] = id;
+    }
+    return newResource;
+  }
+
+  static many(): Array<UserResource>{//Return a specific class containing a list of UserResources
+    return null;
+  }
+}
