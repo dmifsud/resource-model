@@ -11,17 +11,32 @@
     "sourceMap": true,
     "outDir": "build"
   },
+  "filesGlob": [
+    "./typings/**/*.d.ts",
+    "src/**/*.ts"
+  ],
   "files": [
-    "./typings/tsd.d.ts",
     "./typings/es6-promise/es6-promise.d.ts",
-    "src/examples/example.ts",
+    "./typings/tsd.d.ts",
     "src/examples/api-example.ts",
-    "src/examples/resource-example.ts",
+    "src/examples/example.ts",
     "src/examples/model-example.ts",
+    "src/examples/resource-example.ts",
+    "src/lib/classes/API.ts",
     "src/lib/classes/Resource.ts",
     "src/lib/classes/SerializableModel.ts",
     "src/lib/interfaces/IData.ts",
+    "src/lib/interfaces/IResource.ts",
     "src/lib/interfaces/ISerializableModel.ts",
-    "src/lib/interfaces/IResource.ts"
+    "src/resourceful/examples/DataLayer/DefaultApi.ts",
+    "src/resourceful/examples/ServiceLayer/UserResourceExample.ts",
+    "src/resourceful/examples/ServiceLayer/example.ts",
+    "src/resourceful/lib/APILayer/API.ts",
+    "src/resourceful/lib/DataLayer/classes/API.ts",
+    "src/resourceful/lib/DataLayer/interfaces/DataInterface.ts",
+    "src/resourceful/lib/ModelLayer/Model/Model.ts",
+    "src/resourceful/lib/ModelLayer/Serializable/SerializableInterface.ts",
+    "src/resourceful/lib/Resourceful.ts",
+    "src/resourceful/lib/SourceLayer/Sourceful.ts"
   ]
 }

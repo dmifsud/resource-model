@@ -1,6 +1,6 @@
 module.exports = {
   context: __dirname + '/src',
-  entry: './examples/example.ts',
+  entry: './resourceful/examples/ServiceLayer/example.ts',
   output: {
     path: __dirname + '/build',
     filename: './bundle.js'
