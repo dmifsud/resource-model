@@ -2,6 +2,8 @@ import {UserApiResource} from "../ResourceLayer/UserResource";
 
 //creates one empty resource reference
 var userResource = UserApiResource.one();
+UserApiResource.one(3).Hobby.one(23).get();
+
 
 console.group("Empty");
 console.log(UserApiResource.one());
@@ -14,7 +16,7 @@ userResource.model.name = "David";
 userResource.model.surname = "Mifsud"
 console.log(userResource);
 //and can be saved
-userResource.save();
+userResource.save(); //PUT: /users/42
 console.groupEnd();
 
 console.group("Another empty");
