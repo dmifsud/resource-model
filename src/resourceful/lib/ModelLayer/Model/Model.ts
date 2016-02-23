@@ -1,6 +1,9 @@
 import {SerializableInterface} from "../Serializable/SerializableInterface";
 
-export interface ModelInterface extends SerializableInterface{}
+export interface ModelInterface extends SerializableInterface{
+  getIdentifier() : any;
+  getIdentifierProperty() : any;
+}
 
 export abstract class Model implements ModelInterface{
   //TODO: replace with @index

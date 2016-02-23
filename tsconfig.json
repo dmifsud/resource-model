@@ -29,6 +29,7 @@
     "src/lib/interfaces/IResource.ts",
     "src/lib/interfaces/ISerializableModel.ts",
     "src/resourceful/examples/DataLayer/DefaultApi.ts",
+    "src/resourceful/examples/ModelLayer/UserModel.ts",
     "src/resourceful/examples/ResourceLayer/UserResource.ts",
     "src/resourceful/examples/ServiceLayer/example.ts",
     "src/resourceful/lib/APILayer/API.ts",
@@ -38,5 +39,8 @@
     "src/resourceful/lib/Resourceful.ts",
     "src/resourceful/lib/SourceLayer/Resourceful.ts",
     "src/resourceful/lib/SourceLayer/Sourceful.ts"
-  ]
+  ],
+  "atom": {
+    "rewriteTsconfig": true
+  }
 }
