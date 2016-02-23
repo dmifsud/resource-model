@@ -1,7 +1,7 @@
 import {User} from "../ResourceLayer/UserResource";
 
 var UserApiResource = User.getUserApiResource();
-UserApiResource.one(32).Hobby.one(43).get();
+// UserApiResource.one(32).Hobby.one(43).get()
 
 
 //creates one empty resource reference

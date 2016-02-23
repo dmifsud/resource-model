@@ -5,7 +5,7 @@ import {API,BaseUrl,ApiResource} from "../../lib/APILayer/API";
 import {DefaultApi} from "../DataLayer/DefaultApi";
 import {SourceInterface} from "../../lib/SourceLayer/Sourceful";
 import {Resource} from "../../lib/SourceLayer/Resourceful";
-import {RelationalInterface} from "../../lib/SourceLayer/Relational";
+import {RelationalInterface, Relational, bindTo} from "../../lib/SourceLayer/Relational";
 import {UserModel} from "../ModelLayer/UserModel";
 import {Conf} from "./kernel";
 
@@ -57,26 +57,12 @@ kernel.bind(new TypeBinding<HobbyRelationalInterface>("HobbyRelationalInterface"
 
 
 
-export interface UserRelationalInterface extends RelationalInterface<UserResource>{
-  one(id?: any) : UserResource;
-}
+export interface UserRelationalInterface extends RelationalInterface<UserResource>{}
 
-class UserRelational implements UserRelationalInterface{
-
-  getParentBaseUrl() : string{
-    return null;
+class UserRelational extends Relational<UserResource> implements UserRelationalInterface{
+  constructor(){
+    super("UserSourceInterface", kernel);
   }
-
-  one(id?: any) : UserResource{
-    var newResource = kernel.resolve<UserResource>("UserSourceInterface");
-
-    if (typeof id !== "undefined"){ //TODO: improve by finding exact identifier type
-      newResource.model[newResource.model.getIdentifierProperty()] = id;
-    }
-    //TODO: somehow need to set parent baseUrl to newResource
-    return newResource;
-  }
-
 }
 
 kernel.bind(new TypeBinding<UserRelationalInterface>("UserRelationalInterface", UserRelational, TypeBindingScopeEnum.Transient));
