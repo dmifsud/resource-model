@@ -1,8 +1,8 @@
 import {User} from "../ResourceLayer/UserResource";
 
 var UserApiResource = User.getUserApiResource();
-// UserApiResource.one(32).Hobby.one(43).get()
-
+UserApiResource.one(32).hobby.one(43).get();
+//TODO: issue GET: /users//hobby/43
 
 //creates one empty resource reference
 var userResource = UserApiResource.one();

@@ -1,11 +1,10 @@
-import {Source} from "../SourceLayer/Sourceful";
+import {Source,SourceInterface} from "../SourceLayer/Sourceful";
 import {ModelInterface} from "../ModelLayer/Model/Model";
 
 export abstract class API{
 
   protected getBaseUrl() : string{
       throw Error("@BaseUrl annotation not found");
-      return null;
   }
 }
 
@@ -18,14 +17,29 @@ export function BaseUrl(url: string) {
     };
 }
 
+export interface ApiResourceInterface extends SourceInterface{
 
-export class ApiResource<M extends ModelInterface>  extends Source<M>{
+  setParent(value: ApiResourceInterface) : void;
+  getBaseUrl() : string;
+}
 
-  protected getBaseUrl() : string{
+export class ApiResource<M extends ModelInterface>  extends Source<M> implements ApiResourceInterface{
+
+  protected _parent : ApiResourceInterface;
+
+  getBaseUrl() : string{
     return null;
   }
 
   getReferenceIdentifier(overrideId? : any) : string{
-      return this.getBaseUrl() + "/" + (super.getReferenceIdentifier(overrideId) || "");
+      var parentUrl: string = "";
+      if (typeof this._parent !== "undefined"){
+        parentUrl = this._parent.getBaseUrl() + "/";
+      }
+      return parentUrl + this.getBaseUrl() + "/" + (super.getReferenceIdentifier(overrideId) || "");
+  }
+
+  public setParent(value: ApiResourceInterface):void{
+    this._parent = value;
   }
 }

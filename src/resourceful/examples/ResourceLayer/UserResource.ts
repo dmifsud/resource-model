@@ -1,7 +1,7 @@
 import { TypeBinding, Kernel, TypeBindingScopeEnum , Inject} from "inversify";
 import {DataInterface} from "../../lib/DataLayer/interfaces/DataInterface";
 import {ModelInterface, Model, index} from "../../lib/ModelLayer/Model/Model";
-import {API,BaseUrl,ApiResource} from "../../lib/APILayer/API";
+import {API,BaseUrl,ApiResource,} from "../../lib/APILayer/API";
 import {DefaultApi} from "../DataLayer/DefaultApi";
 import {SourceInterface} from "../../lib/SourceLayer/Sourceful";
 import {Resource} from "../../lib/SourceLayer/Resourceful";
@@ -26,36 +26,12 @@ class UserResource extends ApiResource<UserModel> implements UserSourceInterface
   //extra implementation
   constructor(data: DataInterface, model: ModelInterface, hobby: HobbyRelationalInterface){
     super(data, <UserModel>model);
-    this.Hobby = hobby;
+    this.hobby = hobby;
   }
 
   //@bindTo("hobby")
-  Hobby: HobbyRelationalInterface;
+  hobby: HobbyRelationalInterface;
 }
-
-// // bind
-kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
-kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Singleton));
-kernel.bind(new TypeBinding<UserSourceInterface>("UserSourceInterface", UserResource));
-
-//relations
-kernel.bind(new TypeBinding<HobbyRelationalInterface>("HobbyRelationalInterface", HobbyRelational, TypeBindingScopeEnum.Transient));
-
-
-
-//TODO: temporary solution
-// export class UserApiResource extends Resource<UserResource>{
-//   constructor(){
-//     super("SourceInterface", kernel);
-//   }
-//
-//   static one(id?: any) : UserResource{
-//     return Resource.one<UserResource>("SourceInterface", kernel, id);
-//   }
-// }
-
-
-
 
 export interface UserRelationalInterface extends RelationalInterface<UserResource>{}
 
@@ -65,6 +41,13 @@ class UserRelational extends Relational<UserResource> implements UserRelationalI
   }
 }
 
+// // bind
+kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
+kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Singleton));
+kernel.bind(new TypeBinding<UserSourceInterface>("UserSourceInterface", UserResource));
+
+//relations
+kernel.bind(new TypeBinding<HobbyRelationalInterface>("HobbyRelationalInterface", HobbyRelational, TypeBindingScopeEnum.Transient));
 kernel.bind(new TypeBinding<UserRelationalInterface>("UserRelationalInterface", UserRelational, TypeBindingScopeEnum.Transient));
 
 export class User{
