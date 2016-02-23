@@ -1,8 +1,12 @@
-import {UserApiResource} from "../ResourceLayer/UserResource";
+import {User} from "../ResourceLayer/UserResource";
+
+var UserApiResource = User.getUserApiResource();
+UserApiResource.one(32).Hobby.one(43).get();
+
 
 //creates one empty resource reference
 var userResource = UserApiResource.one();
-UserApiResource.one(3).Hobby.one(23).get();
+//UserApiResource.one(3).Hobby.one(23).get();
 
 
 console.group("Empty");

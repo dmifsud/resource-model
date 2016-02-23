@@ -4,96 +4,24 @@ import {ModelInterface, Model, index} from "../../lib/ModelLayer/Model/Model";
 import {API,BaseUrl,ApiResource} from "../../lib/APILayer/API";
 import {DefaultApi} from "../DataLayer/DefaultApi";
 import {SourceInterface} from "../../lib/SourceLayer/Sourceful";
+import {Resource} from "../../lib/SourceLayer/Resourceful";
+import {RelationalInterface} from "../../lib/SourceLayer/Relational";
+import {UserModel} from "../ModelLayer/UserModel";
+import {Conf} from "./kernel";
 
-var kernel = new Kernel();
+//hobby
+import {HobbySourceInterface,HobbyRelationalInterface,HobbyRelational,HobbyResource} from "./HobbyResource";
+import {HobbyModelInterface,HobbyModel} from "../ModelLayer/HobbyModel";
 
-
-
-interface HobbyModelInterface extends ModelInterface{}
-
-class HobbyModel extends Model implements HobbyModelInterface{
-  @index
-  id: number = 1;
-  name: string = "Gaming";
-}
-
-interface HobbySourceInterface extends SourceInterface{}
-
-@BaseUrl("/hobby")
-@Inject("DataInterface", "HobbyModelInterface")
-class HobbyResource extends ApiResource<HobbyModel> implements HobbySourceInterface{
-  //extra implementation
-
-}
-
-interface RelationalInterface<R extends SourceInterface>{
-  getParentBaseUrl() : string;
-
-  one(id?: any) : R;
-}
-
-// class Relational<R extends SourceInterface> implements RelationalInterface<R>{
-//   one(id?: any) : R{
-//     var newResource = kernel.resolve<R>("HobbySourceInterface");
-//
-//     if (typeof id !== "undefined"){ //TODO: improve by finding exact identifier type
-//       newResource.model[newResource.model.getIdentifierProperty()] = id;
-//     }
-//     return newResource;
-//   }
-// }
+var kernel = Conf.getKernel();
 
 
-
-interface HobbyRelationalInterface extends RelationalInterface<HobbyResource>{
-  one(id?: any) : HobbyResource;
-}
-
-
-function bindTo(propertyName: string){
-
-return function <T extends Function>(target: T){
-target.prototype.getParentBaseUrl = function() : string{
-    return "/yousa" + "/32/";
-  };
-
-  }
-}
-
-
-export class HobbyApiResource implements HobbyRelationalInterface{
-
-  getParentBaseUrl() : string{
-    //return null; //TODO: required from decorator
-    return "/users/32/";
-  }
-
-  one(id?: any) : HobbyResource{
-    var newResource = kernel.resolve<HobbyResource>("HobbySourceInterface");
-
-    if (typeof id !== "undefined"){ //TODO: improve by finding exact identifier type
-      newResource.model[newResource.model.getIdentifierProperty()] = id;
-    }
-    //TODO: somehow need to set parent baseUrl to newResource
-    return newResource;
-  }
-
-}
-
-
-class UserModel extends Model{
-  @index
-  id: number;
-  name: string;
-  surname: string;
-  hobby: HobbyModel;
-}
 
 interface UserSourceInterface extends SourceInterface{}
 
 
 @BaseUrl("/users")
-@Inject("DataInterface", "ModelInterface", "HobbyRelational")
+@Inject("DataInterface", "ModelInterface", "HobbyRelationalInterface")
 class UserResource extends ApiResource<UserModel> implements UserSourceInterface{
   //extra implementation
   constructor(data: DataInterface, model: ModelInterface, hobby: HobbyRelationalInterface){
@@ -105,39 +33,56 @@ class UserResource extends ApiResource<UserModel> implements UserSourceInterface
   Hobby: HobbyRelationalInterface;
 }
 
-
-
 // // bind
 kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
 kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Singleton));
-kernel.bind(new TypeBinding<HobbyRelationalInterface>("HobbyRelational", HobbyApiResource, TypeBindingScopeEnum.Transient));
 kernel.bind(new TypeBinding<UserSourceInterface>("UserSourceInterface", UserResource));
 
-
-//hobby bind
-kernel.bind(new TypeBinding<ModelInterface>("HobbyModelInterface", HobbyModel, TypeBindingScopeEnum.Transient));
-
-kernel.bind(new TypeBinding<HobbySourceInterface>("HobbySourceInterface", HobbyResource));
+//relations
+kernel.bind(new TypeBinding<HobbyRelationalInterface>("HobbyRelationalInterface", HobbyRelational, TypeBindingScopeEnum.Transient));
 
 
-//experimenting. Will need refactor
-export class UserApiResource{
-  container: UserResource;
 
-  constructor(){
-    this.container = UserApiResource.one();
+//TODO: temporary solution
+// export class UserApiResource extends Resource<UserResource>{
+//   constructor(){
+//     super("SourceInterface", kernel);
+//   }
+//
+//   static one(id?: any) : UserResource{
+//     return Resource.one<UserResource>("SourceInterface", kernel, id);
+//   }
+// }
+
+
+
+
+export interface UserRelationalInterface extends RelationalInterface<UserResource>{
+  one(id?: any) : UserResource;
+}
+
+class UserRelational implements UserRelationalInterface{
+
+  getParentBaseUrl() : string{
+    return null;
   }
 
-  static one(id?: any) : UserResource{
+  one(id?: any) : UserResource{
     var newResource = kernel.resolve<UserResource>("UserSourceInterface");
 
     if (typeof id !== "undefined"){ //TODO: improve by finding exact identifier type
-      //newResource.model[newResource.model.getIdentifierProperty()] = id;
+      newResource.model[newResource.model.getIdentifierProperty()] = id;
     }
+    //TODO: somehow need to set parent baseUrl to newResource
     return newResource;
   }
 
-  static many(): Array<UserResource>{//Return a specific class containing a list of UserResources
-    return null;
+}
+
+kernel.bind(new TypeBinding<UserRelationalInterface>("UserRelationalInterface", UserRelational, TypeBindingScopeEnum.Transient));
+
+export class User{
+  static getUserApiResource() : UserRelational{
+    return kernel.resolve<UserRelational>("UserRelationalInterface");
   }
 }
