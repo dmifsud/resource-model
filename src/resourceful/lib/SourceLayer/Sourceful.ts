@@ -1,11 +1,14 @@
 import {DataInterface} from "../DataLayer/interfaces/DataInterface";
 import {ModelInterface} from "../ModelLayer/Model/Model";
 import {Promise} from "es6-promise";
+import {BindingInterface,Binding} from "./Relational";
 
 export interface SourceInterface{
 
   model: ModelInterface;
   data: DataInterface;
+  parent: SourceInterface;
+  bindings: Array<BindingInterface>;
 
   save(id: any): Promise<ModelInterface>
 
@@ -17,6 +20,8 @@ export interface SourceInterface{
 export abstract class Source<M extends ModelInterface> implements SourceInterface{
   data: DataInterface;
   model: M;
+  parent: SourceInterface;
+  bindings: Array<BindingInterface>;
 
   constructor(data: DataInterface, model: M){
     this.data = data;

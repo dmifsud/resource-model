@@ -1,13 +1,16 @@
 import {User} from "../ResourceLayer/UserResource";
 
 var UserApiResource = User.getUserApiResource();
-UserApiResource.one(32).hobby.one(43).get();
-//TODO: issue GET: /users//hobby/43
+var userR = UserApiResource.one(32);
+
+userR.hobby.one().get().then(data =>{
+  console.log("Hobby data: " , userR);
+});
+
 
 //creates one empty resource reference
 var userResource = UserApiResource.one();
 //UserApiResource.one(3).Hobby.one(23).get();
-
 
 console.group("Empty");
 console.log(UserApiResource.one());

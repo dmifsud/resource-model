@@ -29,7 +29,7 @@ class UserResource extends ApiResource<UserModel> implements UserSourceInterface
     this.hobby = hobby;
   }
 
-  //@bindTo("hobby")
+  @bindTo("hobby")
   hobby: HobbyRelationalInterface;
 }
 
