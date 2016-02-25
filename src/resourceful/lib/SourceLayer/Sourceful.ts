@@ -12,12 +12,12 @@ export interface SourceInterface{
 
   save(id: any): Promise<ModelInterface>
 
-  get(id: any): Promise<ModelInterface>
+  get(id: any): Promise<SourceInterface>
 
   delete(id: any): Promise<ModelInterface>
 }
 
-export abstract class Source<M extends ModelInterface> implements SourceInterface{
+export abstract class Source<M extends ModelInterface, S extends SourceInterface> implements SourceInterface{
   data: DataInterface;
   model: M;
   parent: SourceInterface;
@@ -27,6 +27,7 @@ export abstract class Source<M extends ModelInterface> implements SourceInterfac
     this.data = data;
     this.model = model;
   }
+
 
   save(id?: any): Promise<M>{
     console.log('[Source] saving: ' + this.getReferenceIdentifier());
@@ -43,11 +44,11 @@ export abstract class Source<M extends ModelInterface> implements SourceInterfac
     });
   }
 
-  get(id?: any): Promise<M>{
+  get(id?: any): Promise<S>{
     return new Promise((resolve,reject) => {
       this.data.get(this.getReferenceIdentifier(), success =>{
         this.model.fromJSON(success);
-        resolve(this.model);
+        resolve(this);
       })
     });
   }

@@ -1,7 +1,6 @@
 import {User} from "../ResourceLayer/UserResource";
 
 var UserApiResource = User.getUserApiResource();
-var UserResource = UserApiResource.one(1);
 
 //CREATE EXAMPLE
 
@@ -22,15 +21,15 @@ var UserResource = UserApiResource.one(1);
 
 //GET WITH RELATIONS EXAMPLE
 
-UserResource.get().then(user => {
-
-  return UserResource.hobby.one(2);
-
-}).then(hobbyResource => {
-  hobbyResource.get().then(hobby => {
-    console.log(UserResource.model);
+UserApiResource.one(1).get().then(userResource => {
+  return userResource.hobby.one(2);
+})
+.then(hobbyResource => {
+  hobbyResource.get().then(() => {
+    console.log(hobbyResource.getParent().model);
   });
 });
+
 // var userR = UserApiResource.one(32);
 //
 // userR.hobby.one().get().then(data =>{

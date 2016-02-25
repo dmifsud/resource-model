@@ -17,12 +17,14 @@ var kernel = Conf.getKernel();
 
 
 
-interface UserSourceInterface extends SourceInterface{}
+interface UserSourceInterface extends SourceInterface{
+  hobby: HobbyRelationalInterface;
+}
 
 
 @BaseUrl("/users")
 @Inject("DataInterface", "ModelInterface", "HobbyRelationalInterface")
-class UserResource extends ApiResource<UserModel> implements UserSourceInterface{
+class UserResource extends ApiResource<UserModel , UserSourceInterface> implements UserSourceInterface{
   //extra implementation
   constructor(data: DataInterface, model: ModelInterface, hobby: HobbyRelationalInterface){
     super(data, <UserModel>model);

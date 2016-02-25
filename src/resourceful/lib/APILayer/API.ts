@@ -24,7 +24,7 @@ export interface ApiResourceInterface extends SourceInterface{
   getBaseUrl() : string;
 }
 
-export class ApiResource<M extends ModelInterface>  extends Source<M> implements ApiResourceInterface{
+export class ApiResource<M extends ModelInterface, S extends SourceInterface>  extends Source<M, S> implements ApiResourceInterface{
 
   protected _parent : ApiResourceInterface;
 
@@ -43,4 +43,8 @@ export class ApiResource<M extends ModelInterface>  extends Source<M> implements
   public setParent(value: ApiResourceInterface):void{
     this._parent = value;
   }
+
+  public getParent() : ApiResourceInterface{
+    return this._parent;
+  };
 }

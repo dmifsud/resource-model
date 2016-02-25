@@ -15,7 +15,7 @@ export interface HobbySourceInterface extends SourceInterface{}
 
 @BaseUrl("/hobbies")
 @Inject("DataInterface", "HobbyModelInterface")
-export class HobbyResource extends ApiResource<HobbyModel> implements HobbySourceInterface{
+export class HobbyResource extends ApiResource<HobbyModel, HobbySourceInterface> implements HobbySourceInterface{
   //extra implementation
 
 }
