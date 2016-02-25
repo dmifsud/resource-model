@@ -1,0 +1,26 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "David",
+      "surname": "Mifsud",
+      "hobby": 2
+    },
+    {
+      "id": 2,
+      "name": "John",
+      "surname": "Doe",
+      "hobby": 1
+    }
+  ],
+  "hobbies": [
+    {
+      "id": 1,
+      "type": "Painting"
+    },
+    {
+      "id": 2,
+      "type": "Gaming"
+    }
+  ]
+}
