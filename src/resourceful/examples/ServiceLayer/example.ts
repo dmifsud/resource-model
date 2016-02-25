@@ -1,50 +1,79 @@
 import {User} from "../ResourceLayer/UserResource";
 
 var UserApiResource = User.getUserApiResource();
-var userR = UserApiResource.one(32);
+var UserResource = UserApiResource.one(1);
 
-userR.hobby.one().get().then(data =>{
-  console.log("Hobby data: " , userR);
+//CREATE EXAMPLE
+
+// var David = UserApiResource.one();
+// David.model.name = "David";
+// David.model.surname = "Newman";
+// David.save().then(userModel => {
+//   console.log(userModel);
+// });
+
+//UPDATE EXAMPLE
+
+// var David = UserApiResource.one(1);
+// David.get().then(user => {
+//   user.surname = "Newman";
+//   David.save();
+// });
+
+//GET WITH RELATIONS EXAMPLE
+
+UserResource.get().then(user => {
+
+  return UserResource.hobby.one(2);
+
+}).then(hobbyResource => {
+  hobbyResource.get().then(hobby => {
+    console.log(UserResource.model);
+  });
 });
-
-
-//creates one empty resource reference
-var userResource = UserApiResource.one();
-//UserApiResource.one(3).Hobby.one(23).get();
-
-console.group("Empty");
-console.log(UserApiResource.one());
-console.groupEnd();
-
-//Model can be modified
-console.group("Modified");
-userResource.model.id = 42;
-userResource.model.name = "David";
-userResource.model.surname = "Mifsud"
-console.log(userResource);
-//and can be saved
-userResource.save(); //PUT: /users/42
-console.groupEnd();
-
-console.group("Another empty");
-console.log(UserApiResource.one());
-console.groupEnd();
-
-console.group("Another Modified");
-//an id can be passed directly to the .one method
-var anotherUser = UserApiResource.one(33);
-
-console.log(anotherUser);
-//getting user with id 33
-//GET: /users/33
-anotherUser.get().then(userModel => {
-  console.log(userModel);
-});
-console.groupEnd();
-
-console.group("Previous model");
-console.log(userResource.model);
-console.groupEnd();
+// var userR = UserApiResource.one(32);
+//
+// userR.hobby.one().get().then(data =>{
+//   console.log("Hobby data: " , userR);
+// });
+//
+// //creates one empty resource reference
+// var userResource = UserApiResource.one();
+// //UserApiResource.one(3).Hobby.one(23).get();
+//
+// console.group("Empty");
+// console.log(UserApiResource.one());
+// console.groupEnd();
+//
+// //Model can be modified
+// console.group("Modified");
+// userResource.model.id = 42;
+// userResource.model.name = "David";
+// userResource.model.surname = "Mifsud"
+// console.log(userResource);
+// //and can be saved
+// userResource.save(); //PUT: /users/42
+// console.groupEnd();
+//
+// console.group("Another empty");
+// console.log(UserApiResource.one());
+// console.groupEnd();
+//
+// console.group("Another Modified");
+// //an id can be passed directly to the .one method
+// var anotherUser = UserApiResource.one(33);
+//
+// console.log(anotherUser);
+// //getting user with id 33
+// //GET: /users/33
+// anotherUser.get().then(userModel => {
+//   console.log(userModel);
+// });
+// console.groupEnd();
+//
+// console.group("Previous model");
+// console.log(userResource.model);
+// console.groupEnd();
 
 //TODO: next UserApiResource.one(32).AddressRelation.many().get()
 //           GET: /users/32/addresses

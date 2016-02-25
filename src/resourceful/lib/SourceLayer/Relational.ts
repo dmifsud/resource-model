@@ -60,8 +60,6 @@ export class Binding implements BindingInterface{
 export function bindTo(modelPropertyName: string){
 
   return function <T extends SourceInterface>(target: T, propertyName: string){
-    //target.parent =
-    console.log(target);
     if (typeof target.bindings === "undefined"){
       target.bindings = new Array<Binding>();
     }

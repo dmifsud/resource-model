@@ -13,7 +13,7 @@ var kernel = Conf.getKernel();
 
 export interface HobbySourceInterface extends SourceInterface{}
 
-@BaseUrl("/hobby")
+@BaseUrl("/hobbies")
 @Inject("DataInterface", "HobbyModelInterface")
 export class HobbyResource extends ApiResource<HobbyModel> implements HobbySourceInterface{
   //extra implementation

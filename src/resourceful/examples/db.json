@@ -3,14 +3,18 @@
     {
       "id": 1,
       "name": "David",
-      "surname": "Mifsud",
-      "hobby": 2
+      "surname": "Newman",
+      "hobbiesId": 2
     },
     {
       "id": 2,
       "name": "John",
-      "surname": "Doe",
-      "hobby": 1
+      "surname": "Doe"
+    },
+    {
+      "name": "David",
+      "surname": "Newman",
+      "id": 3
     }
   ],
   "hobbies": [

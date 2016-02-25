@@ -5,5 +5,5 @@ export interface HobbyModelInterface extends ModelInterface{}
 export class HobbyModel extends Model implements HobbyModelInterface{
   @index
   id: number;
-  name: string;
+  type: string;
 }

@@ -2,7 +2,7 @@ import { TypeBinding, Kernel, TypeBindingScopeEnum , Inject} from "inversify";
 import {DataInterface} from "../../lib/DataLayer/interfaces/DataInterface";
 import {ModelInterface, Model, index} from "../../lib/ModelLayer/Model/Model";
 import {API,BaseUrl,ApiResource,} from "../../lib/APILayer/API";
-import {DefaultApi} from "../DataLayer/DefaultApi";
+import {RequestApi} from "../DataLayer/RequestApi";
 import {SourceInterface} from "../../lib/SourceLayer/Sourceful";
 import {Resource} from "../../lib/SourceLayer/Resourceful";
 import {RelationalInterface, Relational, bindTo} from "../../lib/SourceLayer/Relational";
@@ -43,7 +43,7 @@ class UserRelational extends Relational<UserResource> implements UserRelationalI
 
 // // bind
 kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
-kernel.bind(new TypeBinding<DataInterface>("DataInterface", DefaultApi, TypeBindingScopeEnum.Singleton));
+kernel.bind(new TypeBinding<DataInterface>("DataInterface", RequestApi, TypeBindingScopeEnum.Singleton));
 kernel.bind(new TypeBinding<UserSourceInterface>("UserSourceInterface", UserResource));
 
 //relations

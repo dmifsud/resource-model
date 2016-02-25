@@ -30,8 +30,17 @@ export abstract class Source<M extends ModelInterface> implements SourceInterfac
 
   save(id?: any): Promise<M>{
     console.log('[Source] saving: ' + this.getReferenceIdentifier());
-    this.data.update(this.getReferenceIdentifier(), this.model.toJSON());
-    return null;
+    return new Promise((resolve,reject) => {
+      if (typeof id === "undefined" && typeof this.model.getIdentifier() === "undefined"){
+        this.data.create(this.getReferenceIdentifier(), this.model.toJSON(), response => {
+          resolve(response);
+        });
+      }else{
+        this.data.update(this.getReferenceIdentifier(), this.model.toJSON(), response => {
+          resolve(response);
+        });
+      }
+    });
   }
 
   get(id?: any): Promise<M>{

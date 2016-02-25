@@ -29,6 +29,7 @@
     "src/lib/interfaces/IResource.ts",
     "src/lib/interfaces/ISerializableModel.ts",
     "src/resourceful/examples/DataLayer/DefaultApi.ts",
+    "src/resourceful/examples/DataLayer/RequestApi.ts",
     "src/resourceful/examples/ModelLayer/HobbyModel.ts",
     "src/resourceful/examples/ModelLayer/UserModel.ts",
     "src/resourceful/examples/ResourceLayer/HobbyResource.ts",
