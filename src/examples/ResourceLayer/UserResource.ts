@@ -16,9 +16,7 @@ import {HobbyModelInterface,HobbyModel} from "../ModelLayer/HobbyModel";
 var kernel = Conf.getKernel();
 
 
-
 interface UserSourceInterface extends SourceInterface{}
-
 
 @BaseUrl("/users")
 @Inject("DataInterface", "ModelInterface", "HobbyRelationalInterface")
@@ -43,7 +41,6 @@ class UserRelational extends Relational<UserResource> implements UserRelationalI
 
 // // bind
 kernel.bind(new TypeBinding<ModelInterface>("ModelInterface", UserModel, TypeBindingScopeEnum.Transient));
-kernel.bind(new TypeBinding<DataInterface>("DataInterface", RequestApi, TypeBindingScopeEnum.Singleton));
 kernel.bind(new TypeBinding<UserSourceInterface>("UserSourceInterface", UserResource));
 
 //relations

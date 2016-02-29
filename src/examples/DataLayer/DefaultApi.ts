@@ -1,43 +1,8 @@
-import {IData} from "../lib/interfaces/IData";
-import {API,BaseUrl} from "../lib/classes/API";
-import {Promise} from "es6-promise";
+import {DataInterface} from "../../lib/DataLayer/interfaces/DataInterface";
+import {API,BaseUrl} from "../../lib/APILayer/API";
 
-export class LocalStorage implements IData<Object>{
-
-  save(reference: string, data: Object, success? : Function, fail?: Function) : any{
-
-    var localStorageReturnVal = localStorage.setItem(reference, JSON.stringify(data));
-    if(success){
-      success(localStorageReturnVal);
-    }
-    return localStorageReturnVal;
-  }
-
-  update(reference: string, data: Object, success? : Function, fail?: Function) : any{
-    return this.save(reference, data, success, fail);
-  }
-
-  filter(reference: string) : LocalStorage{
-    return this;
-  }
-
-  get(reference: string, success? : Function, fail?: Function) : Object{
-    var returnedData = JSON.parse(localStorage.getItem(reference));
-    if (success){
-      success(returnedData);
-    }
-    return returnedData;
-  }
-
-  delete(reference: string, success? : Function, fail?: Function): any{
-    return localStorage.removeItem(reference);
-  }
-
-}
-
-
-@BaseUrl("/your-custom-api-url")
-export class DefaultApi extends API implements IData<Promise<Object>>{
+@BaseUrl("/your-resourceful-api")
+export class DefaultApi extends API implements DataInterface{
 
   //This is where we can use something like Restangular
   private baseUrl : string;
@@ -47,7 +12,7 @@ export class DefaultApi extends API implements IData<Promise<Object>>{
     this.baseUrl = this.getBaseUrl();
   }
 
-  save(reference: string, data: Object, success? : Function, fail?: Function) : Promise<Object>{
+  create(reference: string, data: Object, success? : Function, fail?: Function) : Promise<Object>{
     console.log("POST: "+this.baseUrl+reference);
 
     return new Promise((resolve, reject) => {
@@ -100,9 +65,9 @@ export class DefaultApi extends API implements IData<Promise<Object>>{
 
 
       var mockModel = { //NOTE: this is a hardcoded mock
-        id: reference || new Date().getTime(),
-        name: "David",
-        surname: "Mifsud"
+        id: new Date().getTime(),
+        name: "Davy",
+        surname: "Jones"
       };
 
       if (true) {
@@ -121,11 +86,6 @@ export class DefaultApi extends API implements IData<Promise<Object>>{
       // }
     });
 
-  }
-
-  //just a thought experiment
-  filter(value : string) : DefaultApi{
-    return this;
   }
 
   delete(urlReference: string) : Promise<Object>{

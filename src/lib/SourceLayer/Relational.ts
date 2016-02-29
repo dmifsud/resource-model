@@ -35,14 +35,6 @@ export class Relational<R extends ApiResourceInterface> implements RelationalInt
       });
     }
 
-    // for (var prop in newResource){
-    //   if (newResource[prop] instanceof Relational){
-    //     if (typeof newResource[prop].interfaceName !== "undefined"){
-    //       console.log(newResource[prop].ParentReference = newResource);
-    //     }
-    //   }
-    // }
-
     if (typeof this.ParentReference !== "undefined"){
       newResource.setParent(this.ParentReference);
       this.ParentReference.bindings.forEach(binding => {

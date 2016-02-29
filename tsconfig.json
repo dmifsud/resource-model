@@ -15,37 +15,27 @@
     "./typings/**/*.d.ts",
     "src/**/*.ts"
   ],
+  "atom": {
+    "rewriteTsconfig": true
+  },
   "files": [
     "./typings/es6-promise/es6-promise.d.ts",
     "./typings/tsd.d.ts",
-    "src/examples/api-example.ts",
-    "src/examples/example.ts",
-    "src/examples/model-example.ts",
-    "src/examples/resource-example.ts",
-    "src/lib/classes/API.ts",
-    "src/lib/classes/Resource.ts",
-    "src/lib/classes/SerializableModel.ts",
-    "src/lib/interfaces/IData.ts",
-    "src/lib/interfaces/IResource.ts",
-    "src/lib/interfaces/ISerializableModel.ts",
-    "src/resourceful/examples/DataLayer/DefaultApi.ts",
-    "src/resourceful/examples/DataLayer/RequestApi.ts",
-    "src/resourceful/examples/ModelLayer/HobbyModel.ts",
-    "src/resourceful/examples/ModelLayer/UserModel.ts",
-    "src/resourceful/examples/ResourceLayer/HobbyResource.ts",
-    "src/resourceful/examples/ResourceLayer/kernel.ts",
-    "src/resourceful/examples/ResourceLayer/UserResource.ts",
-    "src/resourceful/examples/ServiceLayer/example.ts",
-    "src/resourceful/lib/APILayer/API.ts",
-    "src/resourceful/lib/DataLayer/interfaces/DataInterface.ts",
-    "src/resourceful/lib/ModelLayer/Model/Model.ts",
-    "src/resourceful/lib/ModelLayer/Serializable/SerializableInterface.ts",
-    "src/resourceful/lib/Resourceful.ts",
-    "src/resourceful/lib/SourceLayer/Relational.ts",
-    "src/resourceful/lib/SourceLayer/Resourceful.ts",
-    "src/resourceful/lib/SourceLayer/Sourceful.ts"
-  ],
-  "atom": {
-    "rewriteTsconfig": true
-  }
+    "src/examples/DataLayer/DefaultApi.ts",
+    "src/examples/DataLayer/RequestApi.ts",
+    "src/examples/ModelLayer/HobbyModel.ts",
+    "src/examples/ModelLayer/UserModel.ts",
+    "src/examples/ResourceLayer/HobbyResource.ts",
+    "src/examples/ResourceLayer/kernel.ts",
+    "src/examples/ResourceLayer/UserResource.ts",
+    "src/examples/ServiceLayer/example.ts",
+    "src/lib/APILayer/API.ts",
+    "src/lib/DataLayer/interfaces/DataInterface.ts",
+    "src/lib/ModelLayer/Model/Model.ts",
+    "src/lib/ModelLayer/Serializable/SerializableInterface.ts",
+    "src/lib/Resourceful.ts",
+    "src/lib/SourceLayer/Relational.ts",
+    "src/lib/SourceLayer/Resourceful.ts",
+    "src/lib/SourceLayer/Sourceful.ts"
+  ]
 }
