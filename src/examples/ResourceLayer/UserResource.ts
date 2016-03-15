@@ -16,11 +16,11 @@ import {HobbyModelInterface,HobbyModel} from "../ModelLayer/HobbyModel";
 var kernel = Conf.getKernel();
 
 
-interface UserSourceInterface extends SourceInterface{}
+export interface UserSourceInterface extends SourceInterface{}
 
 @BaseUrl("/users")
 @Inject("DataInterface", "ModelInterface", "HobbyRelationalInterface")
-class UserResource extends ApiResource<UserModel> implements UserSourceInterface{
+export class UserResource extends ApiResource<UserModel> implements UserSourceInterface{
   //extra implementation
   constructor(data: DataInterface, model: ModelInterface, hobby: HobbyRelationalInterface){
     super(data, <UserModel>model);
@@ -33,7 +33,7 @@ class UserResource extends ApiResource<UserModel> implements UserSourceInterface
 
 export interface UserRelationalInterface extends RelationalInterface<UserResource>{}
 
-class UserRelational extends Relational<UserResource> implements UserRelationalInterface{
+export class UserRelational extends Relational<UserResource> implements UserRelationalInterface{
   constructor(){
     super("UserSourceInterface", kernel);
   }

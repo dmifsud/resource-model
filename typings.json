@@ -1,0 +1,7 @@
+{
+  "name": "resource-model",
+  "version": false,
+  "ambientDependencies": {
+    "es6-promise": "github:DefinitelyTyped/DefinitelyTyped/es6-promise/es6-promise.d.ts#72f0056f69f9a2290d2589c1a692896d24406928"
+  }
+}

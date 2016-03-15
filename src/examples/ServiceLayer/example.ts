@@ -1,5 +1,6 @@
 import {User} from "../ResourceLayer/UserResource";
 
+
 var UserApiResource = User.getUserApiResource();
 var UserResource = UserApiResource.one(1);
 

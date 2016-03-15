@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": false,
     "removeComments": true,
     "noLib": false,
@@ -12,15 +12,19 @@
     "outDir": "build"
   },
   "filesGlob": [
-    "./typings/**/*.d.ts",
+    "./typings/main.d.ts",
     "src/**/*.ts"
   ],
   "atom": {
     "rewriteTsconfig": true
   },
+  "exclude": [
+    "typings/browser.d.ts",
+    "typings/browser",
+    "node_modules"
+  ],
   "files": [
-    "./typings/es6-promise/es6-promise.d.ts",
-    "./typings/tsd.d.ts",
+    "./typings/main.d.ts",
     "src/examples/DataLayer/DefaultApi.ts",
     "src/examples/DataLayer/RequestApi.ts",
     "src/examples/ModelLayer/HobbyModel.ts",
@@ -31,9 +35,9 @@
     "src/examples/ServiceLayer/example.ts",
     "src/lib/APILayer/API.ts",
     "src/lib/DataLayer/interfaces/DataInterface.ts",
+    "src/lib/index.ts",
     "src/lib/ModelLayer/Model/Model.ts",
     "src/lib/ModelLayer/Serializable/SerializableInterface.ts",
-    "src/lib/Resourceful.ts",
     "src/lib/SourceLayer/Relational.ts",
     "src/lib/SourceLayer/Resourceful.ts",
     "src/lib/SourceLayer/Sourceful.ts"
