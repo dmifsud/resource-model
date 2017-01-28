@@ -1,4 +1,4 @@
-import {DefaultApi,LocalStorage} from "./api-example.ts";
+import {DefaultApi,LocalStorage} from "./api-example";
 import {UserApi,UsersApi,UserResource} from "./resource-example";
 import {UserModel} from "./model-example";
 
